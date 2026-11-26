@@ -144,7 +144,7 @@
         <button class="portada-boton cartas" data-accion="ir" data-destino="coleccion" aria-label="Cartas y fusiones"></button>
         <button class="portada-boton ayuda" data-accion="ir" data-destino="ayuda" aria-label="Cómo se juega"></button>
       </div>
-      <p class="version portada-version">v0.7</p>
+      <p class="version portada-version">v0.7.1</p>
     </div>`;
   }
 
@@ -267,7 +267,7 @@
     const mano = yo.mano.map((c, i) => {
       const d = i - centroMano;
       return htmlCarta(c, {
-        clases: claseCartaMano(s, v, c, i, miTurno), attrs: `data-accion="carta-mano" data-mano="${i}"`,
+        clases: claseCartaMano(s, v, c, i, miTurno), attrs: `data-accion="carta-mano" data-mano="${i}" data-clave="${c.uid || `m${i}`}"`,
         estilo: `--giro:${(d * GIRO_ABANICO).toFixed(1)}deg;--arco:${(d * d * ARCO_ABANICO).toFixed(2)}em`,
       });
     }).join('');

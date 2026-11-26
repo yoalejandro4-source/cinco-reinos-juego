@@ -31,7 +31,12 @@
     // Sin cuenta iniciada solo se ve la pantalla de entrar (js/cuenta.js pone la guardia).
     if (typeof UI.guardia === 'function') ui.pantalla = UI.guardia(ui.pantalla);
     const enBatalla = ui.pantalla === 'batalla';
-    app.innerHTML = (VISTAS[ui.pantalla] || VISTAS.inicio)() + (enBatalla ? '' : R.htmlBotonAudio('flotante'));
+    const html = (VISTAS[ui.pantalla] || VISTAS.inicio)() + (enBatalla ? '' : R.htmlBotonAudio('flotante'));
+    // En la batalla se cambia solo lo que cambió (mucho más liviano en el celular).
+    const firma = `${ui.pantalla}|${ui.partida}`;
+    if (enBatalla && raiz.Morph && app.dataset.firma === firma) raiz.Morph.morfar(app, html);
+    else app.innerHTML = html;
+    app.dataset.firma = firma;
     document.body.dataset.pantalla = ui.pantalla;
     actualizarCampoFondo();
     actualizarFondoVivo();

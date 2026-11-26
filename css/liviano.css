@@ -34,3 +34,12 @@
 .liviano .carta { box-shadow: 0 .4em .9em rgba(0, 0, 0, .7) !important; }
 .liviano .mano .carta.previa { box-shadow: 0 0 0 .3em #fff, 0 .4em .9em rgba(0, 0, 0, .7) !important; }
 .liviano #fondo::after { display: none; }
+
+/* Batalla en el celular: sin sombras con filtro en cada pieza ni marcos que giran sin parar */
+.liviano .heroe, .liviano .heroe *, .liviano .cristal, .liviano .carta-icono, .liviano .carta-sello, .liviano .carta-paisaje,
+.liviano .gema, .liviano .ficha, .liviano .ficha *, .liviano .fantasma, .liviano .mana-num, .liviano .rt-arco { filter: none !important; }
+.liviano .marco-arcano, .liviano .marco-celestial, .liviano [class*="marco-"] { animation: none !important; }
+.liviano .carta-holo, .liviano .carta-reflejo { display: none !important; }
+.liviano .campo-mitad { filter: none !important; }
+.liviano .campo-mitad::after { content: ''; position: absolute; inset: 0; background: rgba(4, 2, 12, .55); }
+.liviano .batalla .mesa { box-shadow: none !important; }

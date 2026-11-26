@@ -5,6 +5,19 @@
   // Modo liviano: en celulares y tablets se apagan los efectos que más cuestan (ver css/liviano.css).
   const liviano = !!(raiz.matchMedia && raiz.matchMedia('(pointer: coarse)').matches);
   if (liviano && raiz.document) raiz.document.documentElement.classList.add('liviano');
+  const esLiviano = () => !!raiz.document && raiz.document.documentElement.classList.contains('liviano');
+
+  // En modo liviano las animaciones no animan "filter" (brillo, desenfoque): en el celular
+  // cada cuadro con filtro se repinta entero. Se queda el movimiento, que es barato.
+  if (raiz.Element && raiz.Element.prototype.animate) {
+    const animarOriginal = raiz.Element.prototype.animate;
+    raiz.Element.prototype.animate = function (cuadros, opciones) {
+      const sinFiltro = esLiviano() && Array.isArray(cuadros)
+        ? cuadros.map((c) => { if (!c || !('filter' in c)) return c; const { filter, ...resto } = c; return resto; })
+        : cuadros;
+      return animarOriginal.call(this, sinFiltro, opciones);
+    };
+  }
   const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
   function centro(el) {
@@ -49,6 +62,13 @@
   function temblor() {
     const app = document.getElementById('app');
     if (reducido || !app || !app.animate) return;
+    if (esLiviano()) { // sacudir toda la pantalla repinta todo en el celular: queda solo el destello
+      const d = document.createElement('div');
+      d.className = 'destello-rojo';
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 500);
+      return;
+    }
     app.animate([
       { transform: 'translate(0,0)' }, { transform: 'translate(-10px,6px)' }, { transform: 'translate(9px,-7px)' },
       { transform: 'translate(-6px,-4px)' }, { transform: 'translate(5px,5px)' }, { transform: 'translate(0,0)' },
