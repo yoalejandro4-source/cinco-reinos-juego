@@ -23,3 +23,11 @@
 .con-arte.rareza-mitica .carta-marco-img { background-image: url('../arte/marcos/mitica.webp'); }
 .con-arte.rareza-legendaria .carta-marco-img { background-image: url('../arte/marcos/legendaria.webp'); }
 .con-arte.rareza-token .carta-marco-img { background-image: url('../arte/marcos/comun.webp'); }
+
+/* Celular (modo liviano): marcos en miniatura */
+.liviano .con-arte.rareza-comun .carta-marco-img { background-image: url('../arte/marcos/mini/comun.webp'); }
+.liviano .con-arte.rareza-rara .carta-marco-img { background-image: url('../arte/marcos/mini/rara.webp'); }
+.liviano .con-arte.rareza-epica .carta-marco-img { background-image: url('../arte/marcos/mini/epica.webp'); }
+.liviano .con-arte.rareza-mitica .carta-marco-img { background-image: url('../arte/marcos/mini/mitica.webp'); }
+.liviano .con-arte.rareza-legendaria .carta-marco-img { background-image: url('../arte/marcos/mini/legendaria.webp'); }
+.liviano .con-arte.rareza-token .carta-marco-img { background-image: url('../arte/marcos/mini/comun.webp'); }

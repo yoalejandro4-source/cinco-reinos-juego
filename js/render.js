@@ -29,7 +29,9 @@
   const ARTE = new Set(raiz.ARTE_DISPONIBLE || []);
   const archivoArte = (id) => String(id).replace(/\+/g, '-');
   const tieneArte = (id) => ARTE.has(archivoArte(id));
-  const imagenArte = (id, clase) => `<img class="${clase}" src="arte/${archivoArte(id)}.webp" alt="" draggable="false" loading="lazy">`;
+  // En modo liviano (celular) las cartas usan miniaturas: 4 veces menos píxeles en memoria.
+  const carpetaArte = () => (document.documentElement.classList.contains('liviano') ? 'arte/mini' : 'arte');
+  const imagenArte = (id, clase) => `<img class="${clase}" src="${carpetaArte()}/${archivoArte(id)}.webp" alt="" draggable="false" loading="lazy" decoding="async">`;
 
   // Ilustración de la legendaria de cada reino, para fondos y retratos.
   const LEYENDA = Object.freeze({ bosque: 'b8', corona: 'c8', hielo: 'h8', arcano: 'a8', fuego: 'f8' });
@@ -144,7 +146,7 @@
         <button class="portada-boton cartas" data-accion="ir" data-destino="coleccion" aria-label="Cartas y fusiones"></button>
         <button class="portada-boton ayuda" data-accion="ir" data-destino="ayuda" aria-label="Cómo se juega"></button>
       </div>
-      <p class="version portada-version">v0.7.1</p>
+      <p class="version portada-version">v0.7.2</p>
     </div>`;
   }
 

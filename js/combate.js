@@ -5,6 +5,9 @@
   const reducido = !!(raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const espera = (ms) => new Promise((r) => setTimeout(r, ms));
   const MARGEN_MS = 400;
+  // Modo liviano (celular): sin copias de cartas en pantalla y menos partículas.
+  const liviano = () => document.documentElement.classList.contains('liviano');
+  const PARTICULAS_LIVIANO = 0.35;
   // Espera a que termine una animación, con un tope: si el navegador la congela
   // (pestaña oculta, app en segundo plano) el juego no queda trabado.
   const terminar = (anim, ms) => Promise.race([anim.finished.catch(() => {}), espera(ms + MARGEN_MS)]);
@@ -41,7 +44,7 @@
     document.body.appendChild(lienzo);
     ctx = lienzo.getContext('2d');
     const medir = () => {
-      const dpr = Math.min(2, raiz.devicePixelRatio || 1);
+      const dpr = liviano() ? 1 : Math.min(2, raiz.devicePixelRatio || 1);
       lienzo.width = raiz.innerWidth * dpr;
       lienzo.height = raiz.innerHeight * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -95,7 +98,8 @@
     if (reducido) return;
     asegurarLienzo();
     const e = estiloDe(reino);
-    for (let i = 0; i < cantidad; i++) {
+    const total = liviano() ? Math.ceil(cantidad * PARTICULAS_LIVIANO) : cantidad;
+    for (let i = 0; i < total; i++) {
       const base = direccion === undefined ? Math.random() * Math.PI * 2 : direccion + (Math.random() - 0.5) * 2.2;
       const vel = (2 + Math.random() * 7) * fuerza;
       const max = 28 + Math.random() * 30;
@@ -152,6 +156,7 @@
 
   // ---- Embestida de una unidad ----------------------------------------------------------------
   function estelas(el, dx, dy) {
+    if (liviano()) return; // tres copias de la carta volando: lo más caro del ataque en el celular
     const r = el.getBoundingClientRect();
     [0.25, 0.45, 0.65].forEach((t, i) => {
       const fantasma = el.cloneNode(true);
@@ -255,6 +260,17 @@
     if (!el) return;
     if (reducido) { el.classList.add('muriendo'); return; }
     const r = el.getBoundingClientRect();
+    if (liviano()) {
+      // En vez de 9 copias recortadas: la misma carta se hunde y se desvanece.
+      el.animate([
+        { transform: 'scale(1) rotate(0deg)', opacity: 1 },
+        { transform: 'scale(1.15) rotate(-4deg)', opacity: 1, offset: 0.25 },
+        { transform: 'scale(.4) rotate(12deg) translateY(30%)', opacity: 0 },
+      ], { duration: 420, easing: 'ease-in', fill: 'forwards' });
+      estallido(r.left + r.width / 2, r.top + r.height / 2, el.dataset.reino, 30, 1.1);
+      if (sonido()) sonido().efecto('romper');
+      return;
+    }
     const c = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
     CORTES.forEach((fila) => CORTES.forEach((col) => {
       const pedazo = el.cloneNode(true);
