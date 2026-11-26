@@ -147,7 +147,7 @@
         <button class="portada-boton cartas" data-accion="ir" data-destino="coleccion" aria-label="Cartas y fusiones"></button>
         <button class="portada-boton ayuda" data-accion="ir" data-destino="ayuda" aria-label="Cómo se juega"></button>
       </div>
-      <p class="version portada-version">v0.8.2</p>
+      <p class="version portada-version">v0.8.3</p>
     </div>`;
   }
 

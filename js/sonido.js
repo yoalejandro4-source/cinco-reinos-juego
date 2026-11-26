@@ -102,16 +102,21 @@
   const MUESTRA = Object.freeze({
     click: 'metalClick', carta: 'bookPlace1', invocar: 'clothBelt', escudo: 'metalLatch', romper: 'metalPot1',
     voltear: 'bookFlip2', sobre: 'bookOpen', tic: 'metalClick', monedas: 'handleCoins', desenvainar: 'drawKnife1', tela: 'cloth2',
+    'golpe-heroe': 'golpe-heroe', dano: 'golpe-dano',
   });
-  const SOLO_MUESTRA = Object.freeze(['tic', 'click', 'carta', 'voltear', 'sobre', 'monedas', 'desenvainar', 'tela']);
+  const SOLO_MUESTRA = Object.freeze(['tic', 'click', 'carta', 'voltear', 'sobre', 'monedas', 'desenvainar', 'tela', 'golpe-heroe', 'dano']);
+  // Los golpes (tools/hacer_golpes.py) traen el silbido del arma antes del impacto: se tocan
+  // desde un poco antes del impacto para que el golpe caiga justo cuando la carta pega.
+  const DESDE = Object.freeze({ 'golpe-ligero': 0.1, 'golpe-fuerte': 0.18, 'golpe-heroe': 0.15 });
   const muestras = {};
   function muestra(archivo, vol) {
+    const desde = DESDE[archivo] || 0;
     if (!desbloqueado || modo === 'nada' || typeof Audio === 'undefined') return;
     try {
       const base = muestras[archivo] || (muestras[archivo] = new Audio(RUTA_SFX + archivo + '.ogg'));
       const a = base.paused ? base : base.cloneNode();
       a.volume = Math.min(1, (vol || 1) * VOL_MUESTRA * factor.efectos);
-      a.currentTime = 0;
+      a.currentTime = desde;
       a.play().catch(() => {});
     } catch (e) { avisarFallo(archivo, e); }
   }
@@ -341,11 +346,8 @@
     if (!puede('golpe-' + reino)) return;
     try {
       const f = Math.max(1, fuerza || 2);
-      muestra(f >= 4 ? 'chop' : 'knifeSlice', Math.min(1, 0.55 + f * 0.1));
-      tambor(60, Math.min(0.55, 0.22 + f * 0.04), 0.35);
-      ruido({ dur: 0.08, vol: 0.2, f: 1800, q: 1.2 });
-      if (f >= 4) campana(620, 0.05, 0.4);
-      (GOLPES[reino] || GOLPES.corona)();
+      muestra(f >= 4 ? 'golpe-fuerte' : 'golpe-ligero', Math.min(1, 0.8 + f * 0.06));
+      (GOLPES[reino] || GOLPES.corona)(); // el toque del reino (fuego, hielo...) encima del golpe
     } catch (e) { avisarFallo('golpe-' + reino, e); }
   }
 
