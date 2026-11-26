@@ -123,26 +123,64 @@
     });
   }
 
+  // Los avisos se piden con "espera larga": el servidor contesta apenas hay algo nuevo
+  // (o a los ~20 s). Anda a través del túnel de internet, que retiene los avisos en vivo.
+  const ESPERA_LARGA_MS = 30000;
+  const pausa = (ms) => new Promise((ok) => setTimeout(ok, ms));
+  function avisarConexion(si) {
+    if (conectadoAhora === si) return;
+    conectadoAhora = si;
+    repartir({ tipo: 'conexion', conectado: si });
+  }
+
   function conectar() {
     desconectar();
-    if (!sesion || !sesion.base || typeof EventSource === 'undefined') return false;
-    fuente = new EventSource(`${sesion.base}/api/eventos?token=${encodeURIComponent(sesion.token)}`);
-    fuente.onmessage = (e) => {
-      let msg = null;
-      try { msg = JSON.parse(e.data); } catch (err) { if (raiz.console) raiz.console.warn('Aviso del servidor ilegible', err); }
-      if (msg) repartir(msg);
-    };
-    fuente.onopen = () => { conectadoAhora = true; repartir({ tipo: 'conexion', conectado: true }); };
-    fuente.onerror = () => { conectadoAhora = false; repartir({ tipo: 'conexion', conectado: false }); };
+    if (!sesion || !sesion.base) return false;
+    const ciclo = { activo: true, ultimo: 0, control: null };
+    fuente = ciclo;
+    (async () => {
+      let fallos = 0;
+      while (ciclo.activo && sesion) {
+        ciclo.control = new AbortController();
+        const corte = setTimeout(() => ciclo.control.abort(), ESPERA_LARGA_MS);
+        try {
+          const b = await resolver();
+          const r = await fetch(`${b}/api/espera?desde=${ciclo.ultimo}`, {
+            headers: { Authorization: `Bearer ${sesion.token}` }, signal: ciclo.control.signal, cache: 'no-store',
+          });
+          if (r.status === 401) { guardarSesion(null); avisarConexion(false); break; }
+          const d = await r.json();
+          if (!d.ok) throw new Error(d.error || 'sin respuesta');
+          fallos = 0;
+          avisarConexion(true);
+          ciclo.ultimo = d.ultimo;
+          d.mensajes.forEach(repartir);
+        } catch (e) {
+          if (!ciclo.activo) break;
+          fallos += 1;
+          avisarConexion(false);
+          if (fallos >= 2) await descubrir(true); // la PC pudo cambiar de dirección
+          await pausa(Math.min(10000, 1000 * fallos));
+        } finally {
+          clearTimeout(corte);
+        }
+      }
+    })();
     return true;
   }
-  function desconectar() { if (fuente) { fuente.close(); fuente = null; conectadoAhora = false; } }
+  function desconectar() {
+    if (!fuente) return;
+    fuente.activo = false;
+    if (fuente.control) fuente.control.abort();
+    fuente = null;
+    avisarConexion(false);
+  }
 
   raiz.Red = Object.freeze({
     base, descubrir, pedir, entrar, salir, conectar, desconectar, escuchar,
     enLinea: () => conectadoAhora,
     servidor: () => ({ ...descubierta }),
     sesion: () => (sesion ? { ...sesion } : null),
-    conectado: () => !!fuente && fuente.readyState !== 2,
+    conectado: () => !!fuente,
   });
 })(this);
