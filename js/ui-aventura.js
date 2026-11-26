@@ -5,6 +5,10 @@
   const { UI, Render: R, Fx, Datos: D, Economia: E, Aventura: A } = raiz;
   if (!UI || !A || !raiz.Perfil) return;
 
+  const DIALOGO_FIN_MS = 2600; // la escena final aparece después de la animación de victoria/derrota
+  /** La carta del rival de un combate (para su dibujo y su retrato en los diálogos). */
+  const cartaRival = (cap, e) => D.CARTAS.find((c) => c.nombre === cap.rivales[e]) || null;
+  const retratoDe = (carta) => (carta && R.urlArte ? R.urlArte(carta.id) : null);
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const perfil = () => raiz.Perfil.actual();
 
@@ -15,9 +19,11 @@
     const abierta = A.etapaAbierta(p, cap.reino, e);
     const estado = hecho ? 'hecha' : (abierta ? 'abierta' : 'cerrada');
     const premio = hecho ? `Repetir: +${A.PREMIO_REPETIR.oro} 💰` : `+${et.premio.oro} 💰${et.premio.gemas ? ` +${et.premio.gemas} 💎` : ''}`;
+    const retrato = retratoDe(cartaRival(cap, e));
+    const mini = retrato ? retrato.replace(/^arte\//, 'arte/mini/') : null;
     return `<button class="av-etapa ${estado} ${e === 2 ? 'jefe' : ''}" ${abierta ? '' : 'disabled'}
         data-accion="aventura-luchar" data-reino="${cap.reino}" data-etapa="${e}">
-      <span class="av-icono">${hecho ? '✔' : (abierta ? et.icono : '🔒')}</span>
+      <span class="av-retrato" ${mini ? `style="background-image:url('${mini}')"` : ''}><i>${hecho ? '✔' : (abierta ? et.icono : '🔒')}</i></span>
       <span class="av-etapa-texto"><b>${esc(cap.rivales[e])}</b><small>${et.nombre} · ❤ ${et.vida} · ${premio}</small></span>
     </button>`;
   }
@@ -55,7 +61,7 @@
   }
 
   // ---- Acciones -----------------------------------------------------------------------------
-  function luchar(el) {
+  async function luchar(el) {
     const p = perfil();
     const reino = el.dataset.reino;
     const etapa = Number(el.dataset.etapa);
@@ -63,6 +69,12 @@
     const v = E.validarMazo(p);
     if (!v.ok) { Fx.aviso(v.errores[0]); return; }
     const reinos = v.reinos.length >= 2 ? v.reinos.slice(0, 2) : [v.reinos[0], Object.keys(D.REINOS).find((r) => r !== v.reinos[0])];
+    const cap = A.capitulo(reino);
+    const carta = cartaRival(cap, etapa);
+    if (raiz.Escena && raiz.Dialogos) {
+      await raiz.Escena.reproducir(raiz.Dialogos.lineas(reino, etapa, 'intro'),
+        { nombre: cap.rivales[etapa], retrato: retratoDe(carta) }, { nombre: p.nombre });
+    }
     UI.empezarPartida(reinos, p.mazo, A.rival(reino, etapa));
   }
 
@@ -83,6 +95,14 @@
     const cap = A.capitulo(reino);
     let texto = gano ? `🗺️ Aventura: +${r.premio.oro} 💰${r.premio.gemas ? ` +${r.premio.gemas} 💎` : ''}` : '🗺️ Probá ajustar tu mazo y volvé a intentarlo.';
     if (r.premio.capituloCompleto) texto = `👑 ¡Conquistaste ${cap.titulo}! ${texto}`;
+    // Lo que dice el rival al terminar (después de la animación de victoria o derrota)
+    if (raiz.Escena && raiz.Dialogos) {
+      const lineas = raiz.Dialogos.lineas(reino, etapa, gano ? 'victoria' : 'derrota');
+      setTimeout(() => {
+        if (UI.estado.pantalla !== 'batalla') return;
+        raiz.Escena.reproducir(lineas, { nombre: cap.rivales[etapa], retrato: retratoDe(cartaRival(cap, etapa)) }, { nombre: perfil().nombre });
+      }, DIALOGO_FIN_MS);
+    }
     return { ...base, oro: base.oro + r.premio.oro, gemas: base.gemas + r.premio.gemas, aventura: texto, enAventura: true };
   };
 })(this);

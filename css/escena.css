@@ -1,0 +1,24 @@
+/* Escena de diálogo del Modo Aventura (js/escena.js). */
+#escena { position: fixed; inset: 0; z-index: 420; overflow: hidden; cursor: pointer; animation: cine-entra .3s ease-out; user-select: none; }
+#escena.saliendo { animation: cine-sale .25s ease-in forwards; }
+.es-fondo { position: absolute; inset: -40px; background: #05030c center / cover no-repeat; filter: blur(18px) brightness(.35) saturate(1.3); }
+.es-retrato { position: absolute; left: 50%; bottom: 0; width: min(560px, 92vw); height: 82vh; transform: translateX(-50%);
+  background: center 20% / cover no-repeat; -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 62%, transparent 92%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 62%, transparent 92%); animation: es-entra .6s cubic-bezier(.2, 1, .3, 1); transition: filter .3s, transform .3s; }
+@keyframes es-entra { from { opacity: 0; transform: translateX(-50%) translateY(6%) scale(1.04); } }
+#escena[data-quien="narrador"] .es-retrato { filter: brightness(.45) saturate(.6); }
+#escena[data-quien="rival"] .es-retrato { filter: drop-shadow(0 0 30px rgba(255, 190, 80, .25)); }
+.es-caja { position: absolute; left: 50%; bottom: max(1.2rem, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: min(720px, 94vw);
+  padding: 1.6rem 1.3rem 1.2rem; border-radius: 18px; background: linear-gradient(180deg, rgba(30, 16, 54, .95), rgba(8, 4, 18, .97));
+  border: 2px solid #c99a3a; box-shadow: 0 0 30px rgba(255, 180, 60, .25), 0 16px 34px #000; }
+.es-nombre { position: absolute; top: -1.05rem; left: 1.1rem; padding: .3rem 1rem; border-radius: 10px; font-family: var(--fuente-epica, var(--fuente-titulo));
+  font-weight: 900; font-size: .95rem; color: #2a1200; background: linear-gradient(180deg, #fff3b0, #ffc93a 55%, #c98b12); box-shadow: 0 3px 10px rgba(0, 0, 0, .6); }
+#escena[data-quien="narrador"] .es-nombre { color: #f0e6ff; background: linear-gradient(180deg, #6a4f9a, #2e1f55); }
+.es-texto { margin: 0; min-height: 3.2em; font-size: clamp(1rem, 3.6vw, 1.2rem); line-height: 1.45; color: #fff6e0; text-shadow: 0 1px 2px #000; }
+#escena[data-quien="narrador"] .es-texto { font-style: italic; color: #d8ccf0; }
+.es-seguir { position: absolute; right: 1rem; bottom: .6rem; color: #ffd45a; opacity: 0; animation: es-late 1s ease-in-out infinite; }
+#escena.listo .es-seguir { opacity: 1; }
+@keyframes es-late { 50% { transform: translateX(4px); } }
+.es-saltar { position: absolute; top: max(.8rem, env(safe-area-inset-top, 0px)); right: .8rem; z-index: 2; font: inherit; font-family: var(--fuente-titulo);
+  font-size: .8rem; padding: .45rem .9rem; border-radius: 999px; cursor: pointer; color: #fff3d0; background: rgba(0, 0, 0, .55); border: 1px solid rgba(255, 210, 120, .45); }
+.liviano .es-fondo { filter: brightness(.3); }

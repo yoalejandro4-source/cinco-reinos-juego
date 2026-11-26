@@ -38,3 +38,11 @@
   .av-capitulo { padding: .85rem .75rem; }
 }
 .liviano .av-etapa.abierta { animation: none; }
+
+/* Retrato del rival en cada combate del mapa */
+.av-retrato { position: relative; flex: none; width: 3.1rem; height: 3.1rem; border-radius: 12px; overflow: hidden; border: 2px solid #c79a3a;
+  background: radial-gradient(circle at 40% 30%, #5a4670, #150c24 70%) center / cover no-repeat; box-shadow: 0 0 10px rgba(0, 0, 0, .6); }
+.av-retrato[style] { background-size: cover; background-position: center 25%; }
+.av-retrato i { position: absolute; right: -2px; bottom: -2px; font-style: normal; font-size: .8rem; padding: .05rem .25rem; border-radius: 8px; background: rgba(0, 0, 0, .75); }
+.av-etapa.cerrada .av-retrato { filter: grayscale(1) brightness(.5); }
+.av-etapa.jefe .av-retrato { border-color: #ffd45a; box-shadow: 0 0 14px rgba(255, 190, 40, .6); }
