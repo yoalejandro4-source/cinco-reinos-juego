@@ -1,0 +1,139 @@
+/* Capa "épica" de la interfaz: menú con abanico de legendarias, reinos con su
+ * ilustración, campo de batalla con fondos y marcos dorados, héroes con retrato,
+ * mano en abanico y pantalla final. Va después de los demás estilos. */
+:root {
+  --fuente-epica: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  --oro-claro: #fff3b0;
+  --oro-medio: #ffb300;
+  --oro-sombra: #8a4b00;
+}
+
+/* ---- Menú principal ------------------------------------------------------------------ */
+.pantalla.inicio { position: relative; isolation: isolate; overflow: hidden; }
+.pantalla.inicio::before {
+  content: ''; position: absolute; left: 50%; top: 18%; width: 70vmin; height: 70vmin; z-index: -1; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 190, 60, .32), transparent 62%); pointer-events: none;
+}
+.titulo { font-family: var(--fuente-epica); }
+.abanico { position: absolute; left: 50%; bottom: -7rem; width: 0; height: 0; z-index: -1; pointer-events: none; }
+.abanico-carta {
+  position: absolute; left: 0; bottom: 0; transform-origin: 50% 180%;
+  transform: translateX(-50%) rotate(calc(var(--n) * 15deg));
+  opacity: .7; filter: brightness(.8) saturate(1.2);
+  animation: abanico-flotar 6s ease-in-out infinite; animation-delay: calc(var(--n) * -1.1s);
+}
+.abanico-carta .carta { font-size: clamp(10px, 1.5vw, 16px); }
+@keyframes abanico-flotar { 50% { translate: 0 -16px; } }
+.pantalla.inicio .menu { position: relative; padding: 1.2rem; border-radius: 22px; background: rgba(8, 4, 24, .55); backdrop-filter: blur(6px); border: 1px solid rgba(255, 214, 120, .25); box-shadow: 0 20px 60px rgba(0, 0, 0, .6); }
+
+/* ---- Elegir reinos: cada reino con su legendaria ----------------------------------------- */
+.reino-tile {
+  min-height: 21rem; display: flex; flex-direction: column; justify-content: flex-end; gap: .2rem;
+  background:
+    linear-gradient(180deg, transparent 22%, color-mix(in srgb, var(--c3) 80%, transparent) 60%, var(--c3) 100%),
+    var(--arte, none) center 22% / cover no-repeat,
+    linear-gradient(165deg, var(--c1) -40%, var(--c2) 35%, var(--c3) 100%);
+  transition: transform .2s var(--rebote), box-shadow .2s, background-size .4s;
+}
+.reino-tile .reino-icono { font-size: 2.2rem; margin-bottom: 0; }
+.reino-tile .reino-nombre { font-size: 1.2rem; }
+
+/* ---- Campo de batalla ---------------------------------------------------------------------- */
+#campo-fondo { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; background: #05040d; }
+.campo-mitad {
+  position: absolute; left: 0; right: 0; height: 52%; overflow: hidden; background-size: cover; background-position: center 22%;
+  filter: blur(1.5px) saturate(1.35) brightness(.55); transform: scale(1.04);
+}
+.campo-mitad.rival { top: 0; }
+.campo-mitad.propia { bottom: 0; }
+.campo-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+.campo-vineta {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, transparent 44%, rgba(255, 190, 60, .22) 50%, transparent 56%),
+    radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, .78) 100%);
+}
+.batalla .fila-info, .batalla .mesa, .batalla .mano { position: relative; z-index: 1; }
+.batalla .divisor { z-index: 2; }
+
+/* Campos con marco y esquinas doradas */
+.batalla .mesa {
+  border: 1px solid rgba(255, 214, 120, .3); border-radius: 22px; backdrop-filter: blur(2px);
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, .6), 0 10px 30px rgba(0, 0, 0, .55);
+}
+.batalla .mesa-rival { background: linear-gradient(180deg, rgba(40, 4, 14, .55), rgba(20, 4, 10, .3)); box-shadow: inset 0 0 50px rgba(0, 0, 0, .6), inset 0 -40px 60px -40px rgba(255, 60, 90, .45), 0 10px 30px rgba(0, 0, 0, .55); }
+.batalla .mesa-propia { background: linear-gradient(0deg, rgba(4, 20, 40, .55), rgba(4, 10, 24, .3)); box-shadow: inset 0 0 50px rgba(0, 0, 0, .6), inset 0 40px 60px -40px rgba(80, 200, 255, .45), 0 10px 30px rgba(0, 0, 0, .55); }
+.batalla .mesa::before, .batalla .mesa::after {
+  content: ''; position: absolute; width: 44px; height: 44px; pointer-events: none;
+  border: 3px solid var(--oro); filter: drop-shadow(0 0 6px rgba(255, 190, 60, .85));
+}
+.batalla .mesa::before { top: 7px; left: 7px; border-right: none; border-bottom: none; border-radius: 16px 0 0 0; }
+.batalla .mesa::after { bottom: 7px; right: 7px; border-left: none; border-top: none; border-radius: 0 0 16px 0; }
+.mesa-vacia { color: #e8ddff; text-shadow: 0 2px 6px #000; }
+
+/* Línea central de luz y botón de turno tipo medallón */
+.divisor .linea {
+  height: 3px; background: linear-gradient(90deg, transparent, var(--oro-medio) 12%, var(--oro-claro) 50%, var(--oro-medio) 88%, transparent);
+  box-shadow: 0 0 16px var(--oro-medio), 0 0 40px rgba(255, 150, 0, .55);
+}
+.boton-turno { min-width: 14rem; border-radius: 999px; font-size: 1rem; padding: .75em 2em; border-width: 3px; }
+
+/* Héroes: retrato con la legendaria y anillo dorado */
+.heroe {
+  font-size: 17px; padding: .3em;
+  background: conic-gradient(from 0deg, var(--oro-claro), var(--oro-medio), var(--oro-sombra), #ffd84a, var(--oro-claro), var(--oro-medio), var(--oro-sombra), #ffd84a, var(--oro-claro));
+  box-shadow: 0 0 0 .12em rgba(0, 0, 0, .6), 0 0 1.6em color-mix(in srgb, var(--a1) 70%, transparent), 0 .5em 1.2em rgba(0, 0, 0, .75);
+}
+.heroe-retrato.con-imagen { background: #000; }
+.heroe-imagen { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+.heroe-insignias { position: absolute; left: 50%; bottom: .05em; transform: translateX(-50%); display: flex; gap: .05em; }
+.heroe-retrato.con-imagen span { position: static; font-size: .62em; filter: drop-shadow(0 0 .2em #000); }
+.heroe .gema { font-size: 1.05em; }
+.info-jugador .nombre { font-family: var(--fuente-epica); font-size: 1.15rem; text-shadow: 0 0 12px rgba(255, 210, 120, .6), 0 2px 4px #000; }
+.mazo { background: rgba(8, 4, 24, .7); border-color: rgba(255, 214, 120, .35); }
+.cristal { width: 1.2em; height: 1.45em; }
+.mana-num { font-size: 1.1rem; }
+
+/* Mano en abanico */
+.carta {
+  transform: translate3d(0, calc(var(--ty, 0px) + var(--arco, 0px)), 0) rotate(var(--giro, 0deg)) scale(var(--esc, 1))
+    perspective(70em) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+.mano .carta { font-size: 8.2px; margin: 0 -1.5em; transform-origin: 50% 130%; }
+.mano .carta:hover, .mano .carta.seleccionada { --giro: 0deg; --arco: 0px; }
+
+/* Golpe fuerte: destello rojo en toda la pantalla */
+.destello-rojo {
+  position: fixed; inset: 0; z-index: 210; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(255, 30, 50, .45) 100%);
+  animation: destello-rojo .5s ease-out forwards;
+}
+@keyframes destello-rojo { from { opacity: 1; } to { opacity: 0; } }
+
+/* ---- Victoria y derrota con la ilustración del ganador ---------------------------------- */
+.overlay-fin {
+  position: fixed; overflow: hidden;
+  background: radial-gradient(circle, rgba(0, 0, 0, .25), rgba(0, 0, 0, .9) 72%), var(--arte, none) center 25% / cover no-repeat, #000;
+}
+.overlay-fin > * { position: relative; }
+.fin-rayos {
+  position: absolute !important; left: 50%; top: 40%; width: 160vmax; height: 160vmax; transform: translate(-50%, -50%);
+  background: repeating-conic-gradient(from 0deg, rgba(255, 210, 120, .07) 0deg 4deg, transparent 4deg 16deg);
+  animation: girar-centro 30s linear infinite; pointer-events: none;
+}
+.overlay-fin.derrota .fin-rayos { background: repeating-conic-gradient(from 0deg, rgba(255, 40, 60, .12) 0deg 6deg, transparent 6deg 18deg); }
+@keyframes girar-centro { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.overlay-fin h1 { font-family: var(--fuente-epica); }
+
+@media (max-width: 700px) {
+  .reino-tile { min-height: 15rem; }
+  .heroe { font-size: 12px; }
+  .boton-turno { min-width: 9rem; font-size: .75rem; }
+  .mano .carta { font-size: 6px; margin: 0 -1.6em; }
+  .batalla .mesa::before, .batalla .mesa::after { width: 26px; height: 26px; border-width: 2px; }
+  .abanico-carta .carta { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .abanico-carta, .fin-rayos { animation: none; }
+}

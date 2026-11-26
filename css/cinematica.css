@@ -1,0 +1,215 @@
+/* Escenas cinematográficas (js/cinematica.js): fusión y revelación por rareza.
+ * Todo con transform/opacity para que ande bien en celular. */
+.cine { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; overflow: hidden; perspective: 900px;
+  background: radial-gradient(circle at 50% 50%, rgba(20, 8, 40, .9), rgba(0, 0, 0, .98)); animation: cine-entra .3s ease-out; cursor: pointer; }
+.cine.saliendo { animation: cine-sale .35s ease-in forwards; }
+@keyframes cine-entra { from { opacity: 0; } }
+@keyframes cine-sale { to { opacity: 0; transform: scale(1.06); } }
+.cine > * { position: absolute; pointer-events: none; }
+.cine .carta { font-size: 14px; }
+
+/* Franjas negras de cine */
+.cine-franja { left: 0; right: 0; height: 11vh; background: #000; z-index: 9; box-shadow: 0 0 30px #000; }
+.cine-franja.arriba { top: 0; animation: franja-arriba .5s cubic-bezier(.2, .8, .2, 1) both; }
+.cine-franja.abajo { bottom: 0; animation: franja-abajo .5s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes franja-arriba { from { transform: translateY(-100%); } }
+@keyframes franja-abajo { from { transform: translateY(100%); } }
+.cine-saltar { bottom: 3.5vh; z-index: 10; font-family: var(--fuente-titulo); font-size: .7rem; letter-spacing: .2em; color: rgba(255, 230, 170, .55); text-transform: uppercase; animation: cine-entra 1s 1.2s both; }
+
+/* ---- Fusión ---------------------------------------------------------------------------- */
+.cf-vortice { width: 150vmax; height: 150vmax; border-radius: 50%; opacity: 0;
+  background: repeating-conic-gradient(from 0deg, var(--ca) 0deg 9deg, transparent 9deg 30deg, var(--cb) 30deg 39deg, transparent 39deg 60deg);
+  -webkit-mask: radial-gradient(circle, transparent 6%, #000 22%, transparent 62%); mask: radial-gradient(circle, transparent 6%, #000 22%, transparent 62%);
+  animation: vortice-gira 2.2s cubic-bezier(.5, 0, .9, .4) forwards, vortice-luz 3.6s ease-in-out forwards; }
+@keyframes vortice-gira { from { transform: rotate(0) scale(1.3); } to { transform: rotate(900deg) scale(.35); } }
+@keyframes vortice-luz { 0% { opacity: 0; } 15% { opacity: .9; } 55% { opacity: 1; } 62% { opacity: 0; } 100% { opacity: 0; } }
+
+.cf-orbita { width: 0; height: 0; animation: orbita 1.75s cubic-bezier(.55, 0, .85, .35) forwards; }
+@keyframes orbita { from { transform: rotate(0); } to { transform: rotate(540deg); } }
+.cf-carta { left: 0; top: 0; }
+.cf-a { animation: espiral-a 1.75s cubic-bezier(.55, 0, .85, .35) forwards; }
+.cf-b { animation: espiral-b 1.75s cubic-bezier(.55, 0, .85, .35) forwards; }
+@keyframes espiral-a { from { transform: translate(-50%, -50%) translateX(-34vmin) rotate(-20deg); filter: brightness(1); }
+  80% { opacity: 1; } to { transform: translate(-50%, -50%) translateX(0) rotate(-560deg) scale(.25); filter: brightness(4); opacity: 0; } }
+@keyframes espiral-b { from { transform: translate(-50%, -50%) translateX(34vmin) rotate(20deg); filter: brightness(1); }
+  80% { opacity: 1; } to { transform: translate(-50%, -50%) translateX(0) rotate(560deg) scale(.25); filter: brightness(4); opacity: 0; } }
+
+.cf-destello { width: 40vmax; height: 40vmax; border-radius: 50%; opacity: 0; z-index: 6;
+  background: radial-gradient(circle, #fff 0%, #fff 12%, color-mix(in srgb, var(--ca) 60%, white) 30%, transparent 65%);
+  animation: destello-cine .9s 1.7s ease-out forwards; }
+@keyframes destello-cine { 0% { opacity: 1; transform: scale(.15); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(4); } }
+.cf-onda { width: 20vmin; height: 20vmin; border-radius: 50%; opacity: 0; border: .6vmin solid var(--c1, var(--ca));
+  box-shadow: 0 0 30px var(--c1, var(--ca)), inset 0 0 30px var(--c1, var(--ca)); animation: onda 1s 1.75s ease-out forwards; }
+.cf-onda.dos { border-color: var(--c2, var(--cb)); box-shadow: 0 0 30px var(--c2, var(--cb)); animation-delay: 1.95s; }
+@keyframes onda { 0% { opacity: 1; transform: scale(.2); } 100% { opacity: 0; transform: scale(9); } }
+
+.cf-chispas { width: 0; height: 0; z-index: 5; }
+.cf-chispas i { position: absolute; width: .5vmin; height: 5vmin; border-radius: 1vmin; opacity: 0; transform-origin: 50% 0;
+  background: linear-gradient(transparent, #fff, var(--c1, var(--ca)));
+  animation: chispa calc(var(--d) * 1s) 1.75s ease-out forwards; }
+@keyframes chispa { 0% { opacity: 1; transform: rotate(var(--a)) translateY(0) scaleY(.4); }
+  100% { opacity: 0; transform: rotate(var(--a)) translateY(calc(30vmin + var(--r) * .25vmin)) scaleY(1.4); } }
+
+.cf-rayos { width: 170vmax; height: 170vmax; opacity: 0; mix-blend-mode: screen;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--ca) 45%, transparent) 0deg 5deg, transparent 5deg 14deg, color-mix(in srgb, var(--cb) 35%, transparent) 14deg 19deg, transparent 19deg 30deg);
+  -webkit-mask: radial-gradient(circle, #000 10%, transparent 55%); mask: radial-gradient(circle, #000 10%, transparent 55%);
+  animation: rayos-cine 12s linear infinite, cine-aparece .5s 1.8s forwards; }
+@keyframes rayos-cine { to { transform: rotate(360deg); } }
+@keyframes cine-aparece { to { opacity: 1; } }
+
+.cf-res { z-index: 7; opacity: 0; animation: res-surge 1.1s 1.85s cubic-bezier(.2, 1.4, .4, 1) forwards; }
+.cf-res .carta { font-size: 17px; box-shadow: 0 0 40px var(--ca), 0 0 90px var(--cb); }
+@keyframes res-surge { 0% { opacity: 0; transform: translateY(8vh) scale(.3) rotateY(540deg); filter: brightness(5); }
+  60% { opacity: 1; filter: brightness(1.6); } 100% { opacity: 1; transform: none; filter: brightness(1); } }
+.cf-titulo { top: 13vh; z-index: 8; font-family: var(--fuente-epica, var(--fuente-titulo)); font-weight: 900; font-size: clamp(1.8rem, 7vw, 3.6rem); letter-spacing: .12em; opacity: 0;
+  background: linear-gradient(90deg, var(--ca), #fff 50%, var(--cb)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 14px var(--ca)); animation: titulo-golpe .6s 1.9s cubic-bezier(.2, 1.6, .4, 1) forwards; }
+.cf-nombre { bottom: 14vh; z-index: 8; font-family: var(--fuente-titulo); font-weight: 900; font-size: clamp(1.1rem, 4.5vw, 2rem); color: #fff3d0; opacity: 0;
+  text-shadow: 0 0 12px var(--ca), 0 2px 4px #000; letter-spacing: .08em; animation: nombre-sube .7s 2.4s ease-out forwards; }
+@keyframes titulo-golpe { from { opacity: 0; transform: scale(3); letter-spacing: .6em; } to { opacity: 1; transform: none; } }
+@keyframes nombre-sube { from { opacity: 0; transform: translateY(2vh); letter-spacing: .4em; } to { opacity: 1; transform: none; } }
+
+/* Temblor de pantalla en el choque */
+.cine-fusion { animation: cine-entra .3s ease-out, temblor-cine .45s 1.72s linear; }
+@keyframes temblor-cine { 20% { transform: translate(-1.2vmin, .8vmin); } 40% { transform: translate(1vmin, -1vmin); } 60% { transform: translate(-.8vmin, -.4vmin); } 80% { transform: translate(.6vmin, .6vmin); } }
+
+/* ---- Revelación por rareza ---------------------------------------------------------------- */
+.cine-revelar .cf-onda { animation-delay: .35s; }
+.cine-revelar .cf-onda.dos { animation-delay: .55s; }
+.cine-revelar .cf-chispas i { animation-delay: .35s; }
+.cr-luz { width: 90vmin; height: 90vmin; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--c1) 70%, white) 0%, var(--c1) 20%, var(--c2) 40%, transparent 68%);
+  opacity: 0; animation: luz-late 1.6s .2s ease-out forwards; }
+@keyframes luz-late { 0% { opacity: 0; transform: scale(.2); } 30% { opacity: 1; transform: scale(1.1); } 100% { opacity: .55; transform: scale(1); } }
+.cr-rayos { width: 170vmax; height: 170vmax; opacity: 0; mix-blend-mode: screen;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--c1) 50%, transparent) 0deg 4deg, transparent 4deg 15deg);
+  -webkit-mask: radial-gradient(circle, #000 8%, transparent 50%); mask: radial-gradient(circle, #000 8%, transparent 50%);
+  animation: rayos-cine 14s linear infinite, cine-aparece .4s .35s forwards; }
+.cr-carta { z-index: 6; opacity: 0; animation: carta-revela .9s .3s cubic-bezier(.2, 1.5, .4, 1) forwards; }
+.cr-carta .carta { font-size: 16px; box-shadow: 0 0 35px var(--c1), 0 0 80px var(--c2); }
+@keyframes carta-revela { 0% { opacity: 0; transform: scale(.2) rotateY(360deg); filter: brightness(6); } 70% { opacity: 1; filter: brightness(1.5); } 100% { opacity: 1; transform: none; filter: none; } }
+.cr-etiqueta { top: 14vh; z-index: 8; font-family: var(--fuente-epica, var(--fuente-titulo)); font-weight: 900; font-size: clamp(1.8rem, 8vw, 3.8rem); letter-spacing: .14em; opacity: 0;
+  color: color-mix(in srgb, var(--c1) 55%, white); text-shadow: 0 0 18px var(--c1), 0 0 40px var(--c2), 0 3px 4px #000; animation: titulo-golpe .6s .45s cubic-bezier(.2, 1.6, .4, 1) forwards; }
+.cr-nombre { bottom: 15vh; z-index: 8; font-family: var(--fuente-titulo); font-weight: 900; font-size: clamp(1rem, 4.5vw, 1.9rem); color: #fff6dc; opacity: 0;
+  text-shadow: 0 0 12px var(--c1), 0 2px 4px #000; animation: nombre-sube .6s .9s ease-out forwards; }
+.rev-epica { background: radial-gradient(circle, rgba(40, 0, 70, .85), rgba(0, 0, 0, .95)); }
+.rev-mitica { background: radial-gradient(circle, rgba(70, 0, 12, .88), rgba(0, 0, 0, .96)); animation: cine-entra .3s ease-out, temblor-cine .4s .35s linear; }
+.rev-legendaria { background: radial-gradient(circle, rgba(80, 40, 0, .88), rgba(0, 0, 0, .97)); animation: cine-entra .3s ease-out, temblor-cine .5s .35s linear; }
+.rev-legendaria .cr-carta .carta { font-size: 18px; }
+.rev-legendaria .cr-etiqueta { background: linear-gradient(180deg, #fff8d0, #ffc21a 50%, #ff7a00); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 16px #ffb300); text-shadow: none; }
+
+/* ---- Celular ----------------------------------------------------------------------------- */
+@media (max-width: 700px) {
+  .cine .carta { font-size: 11px; }
+  .cf-res .carta, .cr-carta .carta { font-size: 13px; }
+  .rev-legendaria .cr-carta .carta { font-size: 14px; }
+}
+.liviano .cf-rayos, .liviano .cr-rayos { animation: cine-aparece .5s 1.8s forwards; }
+.liviano .cr-rayos { animation-delay: .35s; }
+
+/* ---- Victoria y derrota ------------------------------------------------------------------------ */
+.overlay-fin { overflow: hidden; }
+.fin-franja { position: absolute !important; left: 0; right: 0; height: 9vh; background: #000; z-index: 0; }
+.fin-franja.arriba { top: 0; animation: franja-arriba .6s cubic-bezier(.2, .8, .2, 1) both; }
+.fin-franja.abajo { bottom: 0; animation: franja-abajo .6s cubic-bezier(.2, .8, .2, 1) both; }
+.fin-emblema { font-size: clamp(3rem, 10vw, 5.5rem); line-height: 1; margin-bottom: -.6rem; }
+.overlay-fin h1.fin-titulo { animation: none; display: flex; justify-content: center; filter: none; background: none; color: inherit; text-shadow: none; }
+.fin-titulo span { display: inline-block; opacity: 0; }
+.fin-texto, .fin-resto { opacity: 0; animation: cine-aparece .7s 1.5s ease-out forwards; }
+.fin-resto { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.fin-particulas { position: absolute !important; inset: 0; pointer-events: none; z-index: 0; }
+.fin-particulas i { position: absolute; top: -4vh; left: calc(var(--x) * 1%); opacity: 0; }
+
+/* Victoria: corona que cae, letras de oro que golpean una por una, confeti dorado */
+.victoria .fin-emblema { filter: drop-shadow(0 0 25px #ffc21a); animation: corona-cae .9s .2s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes corona-cae { from { opacity: 0; transform: translateY(-40vh) rotate(-25deg) scale(.6); } to { opacity: 1; transform: none; } }
+.victoria .fin-titulo span { background: linear-gradient(180deg, #fffbe0, #ffd45a 40%, #ff8a00); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(255, 170, 0, .8)) drop-shadow(0 4px 0 #5a2a00);
+  animation: letra-golpe .5s calc(.55s + var(--i) * .07s) cubic-bezier(.2, 1.8, .4, 1) forwards; }
+@keyframes letra-golpe { from { opacity: 0; transform: scale(3.5) translateY(-6vh); } to { opacity: 1; transform: none; } }
+.victoria .fin-particulas i { width: .7rem; height: 1.1rem; border-radius: 2px; background: linear-gradient(135deg, #fff6c4, #ffc21a 50%, #b36b00);
+  animation: confeti calc(var(--t) * 1s) calc(1s + var(--r) * 1s) linear infinite; }
+@keyframes confeti { 0% { opacity: 1; transform: translateY(0) rotate(0) rotateY(0); } 100% { opacity: .9; transform: translateY(115vh) rotate(540deg) rotateY(720deg); } }
+
+/* Derrota: pantalla gris, letras que caen pesadas y se rajan, ceniza, espada que se clava */
+.overlay-fin.derrota::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(circle, rgba(20, 20, 25, .35) 30%, rgba(150, 0, 20, .6) 100%);
+  animation: flash-rojo .9s ease-out, latido-rojo 2.4s .9s ease-in-out infinite; }
+@keyframes flash-rojo { from { background-color: rgba(200, 0, 30, .75); } }
+@keyframes latido-rojo { 50% { opacity: .5; } }
+.derrota .fin-emblema { filter: grayscale(.4) drop-shadow(0 0 18px #ff0030); animation: espada-clava .7s .2s cubic-bezier(.6, 0, 1, .6) both; }
+@keyframes espada-clava { from { opacity: 0; transform: translateY(-45vh) rotate(135deg); } 85% { transform: translateY(1vh) rotate(135deg); } to { opacity: 1; transform: rotate(135deg); } }
+.derrota .fin-titulo { position: relative; }
+.derrota .fin-titulo span { color: #b8b0b4; text-shadow: 0 0 22px #ff0030, 0 5px 0 #2a0008;
+  animation: letra-cae .6s calc(.5s + var(--i) * .09s) cubic-bezier(.6, 0, 1, .7) forwards, letra-tiembla .15s calc(1.1s + var(--i) * .09s) 2; }
+@keyframes letra-cae { from { opacity: 0; transform: translateY(-25vh) rotate(calc((var(--i) - 3) * 6deg)); } to { opacity: 1; transform: rotate(calc((var(--i) - 3) * 1.5deg)); } }
+@keyframes letra-tiembla { 50% { translate: 0 .4vh; } }
+.derrota .fin-titulo::after { content: ''; position: absolute; left: 8%; right: 8%; top: 50%; height: .6rem; z-index: 2;
+  background: linear-gradient(90deg, transparent, #ff2a40 8%, #120003 30%, #ff5a6a 50%, #120003 70%, #ff2a40 92%, transparent);
+  clip-path: polygon(0 40%, 12% 0, 25% 70%, 38% 20%, 52% 90%, 66% 10%, 80% 75%, 92% 25%, 100% 50%, 92% 100%, 80% 100%, 66% 60%, 52% 100%, 38% 70%, 25% 100%, 12% 60%, 0 100%);
+  transform: scaleX(0); transform-origin: left; animation: raja 0.35s 1.35s ease-out forwards; }
+@keyframes raja { to { transform: scaleX(1); } }
+.derrota .fin-particulas i { width: .35rem; height: .35rem; border-radius: 50%; background: #8a8288; box-shadow: 0 0 4px #000;
+  animation: ceniza calc(var(--t) * 1.6s) calc(var(--r) * 1s) linear infinite; }
+@keyframes ceniza { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: .8; } 100% { opacity: 0; transform: translate(6vw, 110vh); } }
+.liviano .victoria .fin-titulo span { filter: none; text-shadow: none; }
+
+/* ---- Apertura de sobres: rasgado, salida de cartas y volteo según la rareza ---------------------- */
+.apertura { --luz: #ffd45a; }
+.apertura.mejor-rara { --luz: #3da5ff; }
+.apertura.mejor-epica { --luz: #c04dff; }
+.apertura.mejor-mitica { --luz: #ff1e46; }
+.apertura.mejor-legendaria { --luz: #ffc21a; }
+/* 1) El sobre tiembla cada vez más, se le abre una grieta de luz y estalla */
+.apertura.rasgando { cursor: default; }
+.apertura.rasgando .ap-ayuda { opacity: 0; transition: opacity .2s; }
+.apertura.rasgando .ap-sobre { position: relative; animation: sobre-carga 1.15s cubic-bezier(.5, 0, 1, .5) forwards; }
+.apertura.rasgando .sobre-arte { animation: none; }
+@keyframes sobre-carga {
+  0% { transform: none; filter: none; }
+  20% { transform: translate(-3px, 1px) rotate(-2deg); } 30% { transform: translate(3px, -1px) rotate(2deg); }
+  40% { transform: translate(-5px, 2px) rotate(-3deg) scale(1.04); } 50% { transform: translate(5px, -2px) rotate(3deg) scale(1.06); }
+  60% { transform: translate(-7px, 1px) rotate(-4deg) scale(1.08); filter: brightness(1.4); }
+  70% { transform: translate(7px, -1px) rotate(4deg) scale(1.1); } 80% { transform: translate(-8px, 2px) rotate(-3deg) scale(1.12); filter: brightness(2); }
+  90% { transform: scale(1.18); filter: brightness(3); opacity: 1; }
+  100% { transform: scale(1.6); filter: brightness(6); opacity: 0; }
+}
+.apertura.rasgando .ap-sobre::after { content: ''; position: absolute; left: -10%; right: -10%; top: 50%; height: 6px; z-index: 5; border-radius: 3px;
+  background: linear-gradient(90deg, transparent, #fff 20%, var(--luz) 50%, #fff 80%, transparent); box-shadow: 0 0 20px var(--luz), 0 0 50px var(--luz);
+  transform: scaleX(0); animation: grieta .5s .5s ease-out forwards; }
+@keyframes grieta { to { transform: scaleX(1); height: 14px; } }
+.apertura.rasgando::after { content: ''; position: absolute; left: 50%; top: 50%; width: 30vmax; height: 30vmax; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, #fff 0%, var(--luz) 25%, transparent 65%); transform: translate(-50%, -50%) scale(0); opacity: 0;
+  animation: estallido-sobre .5s .85s ease-out forwards; }
+@keyframes estallido-sobre { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.2); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(5); } }
+.apertura.rasgando .ap-rayos { animation: girar-centro 4s linear infinite; filter: drop-shadow(0 0 6px var(--luz)); }
+
+/* 2) Las cartas salen disparadas desde el centro en abanico */
+.ap-cartas.entra .ap-slot { animation: ap-sale .75s cubic-bezier(.2, 1.3, .4, 1) both; animation-delay: calc(var(--i) * 110ms); }
+@keyframes ap-sale { 0% { opacity: 0; transform: translate(calc((2 - var(--i)) * 12vw), 0) scale(.2) rotate(calc((var(--i) - 2) * -40deg)); filter: brightness(4); }
+  60% { opacity: 1; filter: brightness(1.4); } 100% { opacity: 1; transform: none; filter: none; } }
+
+/* 3) Volteo: giro 3D real y un anillo de luz del color de la rareza */
+.ap-slot.revelada.recien .carta { animation: ap-gira .6s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes ap-gira { 0% { transform: perspective(700px) rotateY(-180deg) scale(.9); filter: brightness(2.5); } 100% { transform: perspective(700px) rotateY(0); filter: none; } }
+.ap-slot.revelada.recien::after { content: ''; position: absolute; left: 50%; top: 50%; width: 60%; aspect-ratio: 1; border-radius: 50%; pointer-events: none; z-index: 9;
+  border: 4px solid var(--anillo, #fff); box-shadow: 0 0 18px var(--anillo, #fff); transform: translate(-50%, -50%) scale(.3); opacity: 0;
+  animation: anillo-volteo .7s ease-out; }
+@keyframes anillo-volteo { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.3); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6); } }
+.ap-slot.rareza-comun { --anillo: #d8d8e0; }
+.ap-slot.rareza-rara { --anillo: #3da5ff; }
+.ap-slot.rareza-epica { --anillo: #c04dff; }
+.ap-slot.rareza-mitica { --anillo: #ff1e46; }
+.ap-slot.rareza-legendaria { --anillo: #ffc21a; }
+.ap-slot.revelada.rareza-epica .carta, .ap-slot.revelada.rareza-mitica .carta, .ap-slot.revelada.rareza-legendaria .carta { box-shadow: 0 0 22px var(--anillo), 0 0 50px var(--anillo); }
+
+/* 4) Anticipación antes de una épica, mítica o legendaria */
+.ap-dorso.cargando { animation: dorso-carga .9s cubic-bezier(.5, 0, 1, .5) forwards !important; }
+.ap-dorso.rareza-epica.cargando { --luz-d: #c04dff; }
+.ap-dorso.rareza-mitica.cargando { --luz-d: #ff1e46; }
+.ap-dorso.rareza-legendaria.cargando { --luz-d: #ffc21a; animation-duration: 1.15s !important; }
+@keyframes dorso-carga {
+  0% { transform: none; } 25% { transform: translateY(-8px) rotate(-3deg); box-shadow: 0 0 40px var(--luz-d); }
+  45% { transform: translateY(-12px) rotate(3deg) scale(1.05); } 65% { transform: translateY(-14px) rotate(-4deg) scale(1.08); filter: brightness(1.8); }
+  85% { transform: translateY(-16px) rotate(4deg) scale(1.12); filter: brightness(2.6); box-shadow: 0 0 60px var(--luz-d), 0 0 120px var(--luz-d); }
+  100% { transform: translateY(-18px) scale(1.18); filter: brightness(5); box-shadow: 0 0 80px #fff, 0 0 160px var(--luz-d); }
+}

@@ -1,0 +1,4 @@
+Audio del juego (todo CC0 / dominio público, no requiere atribución):
+- menu.ogg: "War Theme (ver 2)" de Spring Spring — https://opengameart.org/content/war-theme
+- batalla.ogg: "Determined Pursuit (epic orchestra loop)" de Emma_MA — https://opengameart.org/content/determined-pursuit-epic-orchestra-loop
+- sfx/*.ogg: "50 RPG sound effects" de Kenney (kenney.nl) — https://opengameart.org/content/50-rpg-sound-effects

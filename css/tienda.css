@@ -1,0 +1,67 @@
+/* Cosméticos: marcos del héroe, dorsos, acabados de carta, títulos y la vitrina de la tienda. */
+@property --giro-marco { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes marco-gira { to { --giro-marco: 360deg; } }
+
+/* ---- Marcos (se aplican al .heroe de batalla y a los avatares) ------------------------- */
+.marco-plata { background: conic-gradient(from 0deg, #ffffff, #b8c4d4, #5f6f86, #e6edf5, #ffffff, #8a98ac, #ffffff) !important; box-shadow: 0 0 0 .12em rgba(0, 0, 0, .6), 0 0 1.4em rgba(200, 220, 255, .7) !important; }
+.marco-esmeralda { background: conic-gradient(from 0deg, #d8ffe8, #2bff88, #046b36, #7dffae, #d8ffe8, #0f9e4f, #d8ffe8) !important; box-shadow: 0 0 0 .12em rgba(0, 0, 0, .6), 0 0 1.6em rgba(43, 255, 136, .7) !important; }
+.marco-infernal { background: conic-gradient(from 0deg, #fff3a0, #ff5a1a, #5a0008, #ffb02e, #fff3a0, #b3000f, #fff3a0) !important; box-shadow: 0 0 0 .12em rgba(0, 0, 0, .6), 0 0 1.8em rgba(255, 70, 20, .8) !important; }
+.marco-escarcha { background: conic-gradient(from 0deg, #ffffff, #7af4ff, #0d3d9e, #c9f6ff, #ffffff, #3cb8ff, #ffffff) !important; box-shadow: 0 0 0 .12em rgba(0, 0, 0, .6), 0 0 1.6em rgba(122, 244, 255, .8) !important; }
+.marco-arcano { background: conic-gradient(from var(--giro-marco), #ff9dff, #7a1cff, #2a0060, #ea85ff, #ff9dff) !important; animation: marco-gira 4s linear infinite; box-shadow: 0 0 0 .12em rgba(0, 0, 0, .6), 0 0 2em rgba(200, 90, 255, .85) !important; }
+.marco-celestial { background: conic-gradient(from var(--giro-marco), #ff3d6e, #ffb300, #3dff9a, #3dd6ff, #b23dff, #ff3d6e) !important; animation: marco-gira 3s linear infinite; box-shadow: 0 0 0 .12em rgba(0, 0, 0, .6), 0 0 2.2em rgba(255, 255, 255, .8) !important; }
+
+/* Avatar con imagen en la barra y el perfil */
+.con-img { padding: 0; overflow: hidden; }
+.con-img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; border-radius: 50%; display: block; }
+.bp-avatar.con-img, .pf-avatar.con-img { padding: .18rem; }
+.bp-avatar[class*="marco-"], .pf-avatar[class*="marco-"] { border: 0; }
+.bp-texto { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
+.bp-titulo, .titulo-jugador { font-size: .72rem; font-style: italic; color: #ffe59a; text-shadow: 0 1px 2px #000; }
+
+/* ---- Dorsos de carta ---------------------------------------------------------------------- */
+.dorso-carta { border-radius: .4em; border: .2em solid #ffd45a; background: radial-gradient(circle, #ffd45a 0 18%, transparent 20%), repeating-linear-gradient(45deg, #3b1d8a 0 .4em, #5a2bd0 .4em .8em); }
+.dorso-carta.mini { display: inline-block; width: .9em; height: 1.25em; vertical-align: -.2em; border-width: .1em; }
+.dorso-dorado { border-color: #fff3b0 !important; background: radial-gradient(circle, #fff 0 14%, transparent 16%), repeating-linear-gradient(45deg, #b36b00 0 .4em, #ffc531 .4em .8em) !important; }
+.dorso-fuego { border-color: #ffb02e !important; background: radial-gradient(circle at 50% 70%, #fff3a0 0 10%, #ff5a1a 25%, transparent 45%), repeating-linear-gradient(135deg, #5a0008 0 .4em, #b3000f .4em .8em) !important; }
+.dorso-hielo { border-color: #c9f6ff !important; background: radial-gradient(circle, #fff 0 14%, transparent 16%), repeating-linear-gradient(60deg, #0d3d9e 0 .4em, #3cb8ff .4em .8em) !important; }
+.dorso-esmeralda { border-color: #7dffae !important; background: radial-gradient(circle, #d8ffe8 0 14%, transparent 16%), repeating-linear-gradient(45deg, #046b36 0 .4em, #0f9e4f .4em .8em) !important; }
+.dorso-cosmico { border-color: #ea85ff !important; background: radial-gradient(circle at 30% 30%, #fff 0 2%, transparent 3%), radial-gradient(circle at 70% 60%, #fff 0 1.5%, transparent 2.5%), radial-gradient(circle, #ffb3ff 0 12%, #7a1cff 30%, #12002e 70%) !important; }
+.ap-dorso.dorso-carta { border-width: .35em; }
+
+/* ---- Acabados de las cartas de tu mano ------------------------------------------------------- */
+.carta.acabado-dorado::before, .carta.acabado-prisma::before {
+  content: ''; position: absolute; inset: 0; z-index: 6; border-radius: 1em; pointer-events: none; mix-blend-mode: overlay;
+  background-size: 250% 100%; animation: brillo 2.6s ease-in-out infinite;
+}
+.carta.acabado-dorado { box-shadow: 0 0 0 .2em #ffd45a, 0 0 1.6em rgba(255, 190, 60, .8); }
+.carta.acabado-dorado::before { background-image: linear-gradient(115deg, transparent 25%, rgba(255, 230, 140, .9) 45%, rgba(255, 255, 255, .9) 50%, transparent 65%); }
+.carta.acabado-prisma { box-shadow: 0 0 0 .2em #fff, 0 0 1.8em rgba(255, 120, 230, .8); }
+.carta.acabado-prisma::before { background-image: linear-gradient(115deg, transparent 20%, #ff3d6e 35%, #ffb300 42%, #3dff9a 50%, #3dd6ff 58%, #b23dff 65%, transparent 80%); opacity: .75; }
+
+/* ---- Vitrina de la tienda -------------------------------------------------------------------- */
+.tv-bloque { width: min(1150px, 100%); display: flex; flex-direction: column; gap: .5rem; }
+.tv-tipo { font-family: var(--fuente-titulo); color: #e8ddff; margin-top: .6rem; }
+.tv-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .7rem; }
+.tv-item {
+  display: flex; flex-direction: column; align-items: center; gap: .45rem; padding: .7rem .5rem; border-radius: 14px; text-align: center;
+  background: rgba(10, 6, 24, .8); border: 1px solid rgba(255, 214, 120, .25); transition: transform .15s, border-color .15s;
+}
+.tv-item:hover { transform: translateY(-3px); border-color: rgba(255, 214, 120, .6); }
+.tv-item.puesto { border-color: #7dffae; box-shadow: 0 0 14px rgba(125, 255, 174, .35); }
+.tv-vista { height: 5.2rem; width: 100%; display: grid; place-items: center; overflow: hidden; border-radius: 10px; background: rgba(0, 0, 0, .35); }
+.tv-avatar { width: 4.6rem; height: 4.6rem; border-radius: 50%; object-fit: cover; object-position: 50% 18%; border: 2px solid var(--oro); }
+.tv-icono { font-size: 2.2rem; }
+.tv-marco { font-size: 11px; }
+.tv-titulo { font-family: var(--fuente-titulo); font-weight: 900; color: #ffe59a; padding: 0 .3rem; text-shadow: 0 0 10px rgba(255, 190, 60, .5); }
+.tv-vista .dorso-carta { width: 3.2rem; height: 4.4rem; }
+.tv-arena { width: 100%; height: 100%; object-fit: cover; }
+.tv-acabado { width: 3.4rem; height: 4.6rem; border-radius: .5rem; display: grid; place-items: center; font-size: 1.6rem; position: relative; overflow: hidden; background: linear-gradient(160deg, #2a1d5a, #0d0820); border: 2px solid #8d99a8; }
+.tv-acabado.acabado-dorado { border-color: #ffd45a; box-shadow: 0 0 14px rgba(255, 190, 60, .7); }
+.tv-acabado.acabado-prisma { border-color: #fff; box-shadow: 0 0 14px rgba(255, 120, 230, .7); background: linear-gradient(115deg, #ff3d6e, #ffb300, #3dff9a, #3dd6ff, #b23dff); }
+.tv-nombre { font-weight: 700; font-size: .85rem; min-height: 2.2em; display: flex; align-items: center; }
+.tv-puesto { color: #7dffae; font-weight: 800; font-size: .85rem; }
+.enlace { background: none; border: 0; color: var(--oro); font-weight: 800; text-decoration: underline; cursor: pointer; font-size: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marco-arcano, .marco-celestial, .carta.acabado-dorado::before, .carta.acabado-prisma::before { animation: none; }
+}

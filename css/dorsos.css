@@ -1,0 +1,25 @@
+/* Dorsos ilustrados por reino y marcos de rareza (arte generado en Vibes; tools/procesar_dorsos.py). */
+[class*='dorso-reino-'] { background-size: 100% 100% !important; background-position: center !important; background-repeat: no-repeat !important; border-color: #c9a24a !important; }
+.dorso-reino-bosque { background-image: url('../arte/dorsos/bosque.webp') !important; }
+.dorso-reino-bosque-b { background-image: url('../arte/dorsos/bosque-b.webp') !important; }
+.dorso-reino-corona { background-image: url('../arte/dorsos/corona.webp') !important; }
+.dorso-reino-corona-b { background-image: url('../arte/dorsos/corona-b.webp') !important; }
+.dorso-reino-hielo { background-image: url('../arte/dorsos/hielo.webp') !important; }
+.dorso-reino-hielo-b { background-image: url('../arte/dorsos/hielo-b.webp') !important; }
+.dorso-reino-arcano { background-image: url('../arte/dorsos/arcano.webp') !important; }
+.dorso-reino-arcano-b { background-image: url('../arte/dorsos/arcano-b.webp') !important; }
+.dorso-reino-fuego { background-image: url('../arte/dorsos/fuego.webp') !important; }
+.dorso-reino-fuego-b { background-image: url('../arte/dorsos/fuego-b.webp') !important; }
+
+/* Rival: su mano muestra el dorso de su reino principal */
+.mano-rival .dorso[class*='dorso-reino-'] { border-radius: .25em; box-shadow: 0 2px 6px rgba(0, 0, 0, .6); }
+
+/* Marcos de rareza encima de la ilustración y debajo del texto */
+.carta-marco-img { display: none; }
+.con-arte .carta-marco-img { display: block; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; background: none 0 0 / 100% 100% no-repeat; }
+.con-arte.rareza-comun .carta-marco-img { background-image: url('../arte/marcos/comun.webp'); }
+.con-arte.rareza-rara .carta-marco-img { background-image: url('../arte/marcos/rara.webp'); }
+.con-arte.rareza-epica .carta-marco-img { background-image: url('../arte/marcos/epica.webp'); }
+.con-arte.rareza-mitica .carta-marco-img { background-image: url('../arte/marcos/mitica.webp'); }
+.con-arte.rareza-legendaria .carta-marco-img { background-image: url('../arte/marcos/legendaria.webp'); }
+.con-arte.rareza-token .carta-marco-img { background-image: url('../arte/marcos/comun.webp'); }

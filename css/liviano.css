@@ -1,0 +1,36 @@
+/* Modo liviano (celulares): mismo aspecto, menos trabajo para la placa de video.
+ * Se activa solo con la clase .liviano en <html> (js/fx.js, pantallas táctiles).
+ * Saca: sombras con filter en cada botón, desenfoques de fondo, el blur sobre los
+ * videos y las animaciones que corren sin parar dentro de cada carta. */
+
+/* Botones: sombra simple en vez de dos drop-shadow por botón */
+.liviano .boton, .liviano .volver, .liviano .salir, .liviano .bp-boton, .liviano .tab,
+.liviano .boton:hover:not(:disabled), .liviano .volver:hover, .liviano .salir:hover,
+.liviano .bp-boton:hover, .liviano .tab:hover { filter: none; }
+.liviano .boton:disabled { filter: grayscale(.85) brightness(.55); }
+.liviano .batalla.mi-turno .boton-turno { animation: none; }
+.liviano .batalla.mi-turno .boton-turno::before { background: linear-gradient(180deg, #fff6c4, #ffb02e 40%, #ff6a00); }
+
+/* Desenfoques: el celular los recalcula en cada cuadro */
+.liviano * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.liviano .campo-mitad { filter: saturate(1.3) brightness(.5); transform: none; }
+.liviano .reino-flota { filter: none; }
+
+/* Cartas: quietas por dentro (el arte, el clima y el brillo holográfico no se mueven solos) */
+.liviano .carta *, .liviano .ficha * { animation: none !important; }
+.liviano .carta, .liviano .ficha { animation-iteration-count: 1 !important; }
+.liviano .carta-holo { display: none; }
+.liviano .ficha.lista { animation: none; }
+/* Lo que sí se mueve: avisar qué se puede atacar o elegir */
+.liviano .objetivo-valido { animation: objetivo .9s ease-in-out infinite !important; }
+
+/* Menú y portada: menos capas animadas */
+.liviano .abanico .carta, .liviano .abanico > * { animation: none; }
+.liviano .carta::before, .liviano .carta::after, .liviano .ficha::before, .liviano .ficha::after { animation: none !important; }
+
+/* Capas de luz que se mezclan sobre cada carta (mix-blend): caras para el celular */
+.liviano .carta::after, .liviano .carta-aura, .liviano .carta-reflejo, .liviano .carta-rayos,
+.liviano .con-arte .carta-clima, .liviano .ficha-clima, .liviano .ficha .carta-aura { display: none !important; }
+.liviano .carta { box-shadow: 0 .4em .9em rgba(0, 0, 0, .7) !important; }
+.liviano .mano .carta.previa { box-shadow: 0 0 0 .3em #fff, 0 .4em .9em rgba(0, 0, 0, .7) !important; }
+.liviano #fondo::after { display: none; }

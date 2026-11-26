@@ -1,0 +1,40 @@
+/* Modo Aventura: mapa de capítulos (js/ui-aventura.js). */
+.pantalla.aventura { justify-content: flex-start; gap: 1rem; padding-top: 4.2rem; }
+.av-sub { max-width: 640px; text-align: center; color: #e8ddff; margin: -.4rem 0 0; }
+.av-progreso { display: flex; align-items: center; gap: .7rem; width: min(560px, 92%); font-family: var(--fuente-titulo); color: #ffe59a; font-weight: 700; }
+.av-barra { flex: 1; height: .7rem; border-radius: 999px; background: rgba(0, 0, 0, .55); border: 1px solid #8a5a12; overflow: hidden; position: relative; }
+.av-barra::after { content: ''; position: absolute; inset: 0; width: calc(var(--p) * 100%); background: linear-gradient(90deg, #ff8a00, #ffd45a); box-shadow: 0 0 10px #ffb300; }
+.av-aviso { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem; padding: .7rem 1rem; border-radius: 12px; background: rgba(120, 20, 20, .55); border: 1px solid #ff6a6a; color: #ffe0e0; text-align: center; }
+
+.av-mapa { display: flex; flex-direction: column; gap: 1.1rem; width: min(760px, 100%); padding-bottom: 2rem; }
+.av-capitulo { position: relative; overflow: hidden; border-radius: 18px; padding: 1rem 1rem 1.1rem; isolation: isolate;
+  border: 2px solid color-mix(in srgb, var(--c1) 70%, #ffd45a); box-shadow: 0 10px 30px rgba(0, 0, 0, .6), 0 0 22px color-mix(in srgb, var(--c1) 35%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c3) 92%, transparent) 30%, color-mix(in srgb, var(--c3) 55%, transparent)), var(--arte, none) right 30% / cover no-repeat, var(--c3);
+  animation: av-entra .5s calc(var(--n) * 80ms) both ease-out; }
+@keyframes av-entra { from { opacity: 0; transform: translateY(18px); } }
+.av-capitulo.bloqueado { filter: grayscale(.85) brightness(.6); }
+.av-capitulo.completo { border-color: #ffd45a; }
+.av-numero { font-family: var(--fuente-titulo); font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: color-mix(in srgb, var(--c1) 60%, white); }
+.av-cabeza h3 { margin: .15rem 0 .3rem; font-family: var(--fuente-epica, var(--fuente-titulo)); font-size: clamp(1.05rem, 3.6vw, 1.45rem); color: #fff; text-shadow: 0 0 12px var(--c1), 0 2px 3px #000; }
+.av-cabeza p { margin: 0 0 .8rem; font-size: .88rem; color: #f0e6ff; max-width: 34rem; text-shadow: 0 1px 2px #000; }
+.av-etapas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+.av-etapa { display: flex; align-items: center; gap: .55rem; text-align: left; padding: .55rem .6rem; border-radius: 12px; cursor: pointer; color: #fff;
+  background: rgba(0, 0, 0, .55); border: 1.5px solid rgba(255, 255, 255, .18); transition: transform .15s, box-shadow .15s; font: inherit; }
+.av-etapa.abierta { border-color: var(--c1); box-shadow: 0 0 14px color-mix(in srgb, var(--c1) 60%, transparent); animation: av-llama 1.8s ease-in-out infinite; }
+.av-etapa.abierta:hover { transform: translateY(-3px); }
+.av-etapa.hecha { border-color: #6bff9e; background: rgba(10, 60, 30, .6); }
+.av-etapa.cerrada { opacity: .55; cursor: not-allowed; }
+.av-etapa.jefe.abierta { border-color: #ffd45a; box-shadow: 0 0 18px rgba(255, 190, 40, .7); }
+@keyframes av-llama { 50% { box-shadow: 0 0 24px var(--c1); } }
+.av-icono { flex: none; width: 2.1rem; height: 2.1rem; display: grid; place-items: center; border-radius: 50%; font-size: 1.05rem; background: radial-gradient(circle at 40% 30%, #5a4670, #150c24 70%); border: 2px solid #c79a3a; }
+.av-etapa-texto { display: flex; flex-direction: column; min-width: 0; }
+.av-etapa-texto b { font-family: var(--fuente-titulo); font-size: .78rem; line-height: 1.15; }
+.av-etapa-texto small { font-size: .68rem; color: #e0d4ff; opacity: .9; margin-top: .15rem; }
+.av-sello { position: absolute; right: .8rem; top: .7rem; transform: rotate(8deg); padding: .2rem .6rem; border: 2px solid #ffd45a; border-radius: 6px;
+  font-family: var(--fuente-titulo); font-weight: 900; font-size: .72rem; letter-spacing: .15em; color: #ffd45a; background: rgba(60, 30, 0, .6); }
+
+@media (max-width: 700px) {
+  .av-etapas { grid-template-columns: 1fr; }
+  .av-capitulo { padding: .85rem .75rem; }
+}
+.liviano .av-etapa.abierta { animation: none; }

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <script>
+    /* Celulares angostos: el juego se dibuja a 480 de ancho y se achica para entrar entero. */
+    (function () {
+      var ANCHO_MINIMO = 480;
+      var corto = Math.min(screen.width || 9999, screen.height || 9999);
+      if (corto >= ANCHO_MINIMO) return;
+      var m = document.querySelector('meta[name=viewport]');
+      if (!m) { m = document.createElement('meta'); m.name = 'viewport'; document.head.appendChild(m); }
+      m.setAttribute('content', 'width=' + ANCHO_MINIMO + ', user-scalable=no');
+      document.documentElement.classList.add('celular-angosto');
+    })();
+  </script>
+  <title>Guerra de los Cinco Reinos</title>
+  <link rel="icon" href="icono.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cinzel+Decorative:wght@700;900&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/cartas.css">
+  <link rel="stylesheet" href="css/batalla.css">
+  <link rel="stylesheet" href="css/vida.css">
+  <link rel="stylesheet" href="css/arte.css">
+  <link rel="stylesheet" href="css/epico.css">
+  <link rel="stylesheet" href="css/portada.css">
+  <link rel="stylesheet" href="css/combate.css">
+  <link rel="stylesheet" href="css/economia.css">
+  <link rel="stylesheet" href="css/tienda.css">
+<link rel="stylesheet" href="css/dorsos.css">
+  <link rel="stylesheet" href="css/botones.css">
+  <link rel="stylesheet" href="css/movil.css">
+<link rel="stylesheet" href="css/cinematica.css">
+<link rel="stylesheet" href="css/aventura.css">
+<link rel="stylesheet" href="css/ajustes.css">
+<link rel="stylesheet" href="css/online.css">
+<link rel="stylesheet" href="css/cuenta.css">
+<link rel="stylesheet" href="css/liviano.css">
+</head>
+<body>
+  <div id="fondo"></div>
+  <main id="app"></main>
+  <script src="js/cartas.js"></script>
+  <script src="js/motor.js"></script>
+  <script src="js/economia.js"></script>
+  <script src="js/tienda.js"></script>
+<script src="js/aventura.js"></script>
+  <script src="js/ia.js"></script>
+  <script src="js/arte.js"></script>
+  <script src="js/reloj-turno.js"></script>
+<script src="js/render.js"></script>
+  <script src="js/render-economia.js"></script>
+  <script src="js/sonido.js"></script>
+  <script src="js/combate.js"></script>
+  <script src="js/fx.js"></script>
+<script src="js/cinematica.js"></script>
+<script src="js/ajustes.js"></script>
+<script src="js/red.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/ui-economia.js"></script>
+<script src="js/ui-aventura.js"></script>
+<script src="js/ui-online.js"></script>
+<script src="js/cuenta.js"></script>
+</body>
+</html>

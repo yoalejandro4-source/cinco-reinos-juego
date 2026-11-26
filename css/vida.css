@@ -1,0 +1,151 @@
+/* "Vida" de las cartas: inclinación 3D, brillo holográfico, clima por reino,
+ * paisajes, criaturas que respiran y aura de las fichas. */
+@keyframes respirar { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-.045em) scale(1.05); } }
+@keyframes sombra { 0%, 100% { transform: translateX(-50%) scale(1); opacity: .75; } 50% { transform: translateX(-50%) scale(.82); opacity: .5; } }
+@keyframes aura { 0%, 100% { transform: scale(.9); opacity: .45; } 50% { transform: scale(1.08); opacity: .8; } }
+@keyframes titilar { from { opacity: .3; } to { opacity: 1; } }
+@keyframes holo-quieto { from { background-position: 0% 30%; } to { background-position: 100% 70%; } }
+
+/* ---- Carta: transformación compuesta (desplazar + escalar + inclinar) ----------- */
+.carta {
+  transform: translate3d(0, var(--ty, 0), 0) scale(var(--esc, 1)) perspective(70em) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+.carta.inclinada { transition: transform 60ms linear, box-shadow var(--rapido), filter var(--rapido); }
+
+/* ---- Ilustración por capas ---------------------------------------------------------- */
+.carta-paisaje {
+  position: absolute; left: -6%; right: -6%; bottom: -2%; height: 62%; z-index: 1; pointer-events: none;
+  background-repeat: no-repeat; background-size: 100% 100%; background-position: bottom center;
+  transform: translateX(calc(var(--px, 0) * .45em));
+  filter: drop-shadow(0 -.1em .4em color-mix(in srgb, var(--c1) 50%, transparent));
+}
+.tipo-hechizo .carta-paisaje { display: none; }
+.carta-clima, .ficha-clima { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.carta-criatura {
+  position: absolute; inset: 0; z-index: 3; display: grid; place-items: center;
+  transform: translate(calc(var(--px, 0) * -.6em), calc(var(--py, 0) * -.4em));
+}
+.carta-criatura .carta-icono { animation: respirar 3.4s ease-in-out infinite; animation-delay: calc(var(--retraso, 0) * -1s); }
+.carta-aura {
+  position: absolute; width: 62%; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c1) 80%, white) 0%, var(--c1) 30%, transparent 68%);
+  mix-blend-mode: screen; animation: aura 3.4s ease-in-out infinite; animation-delay: calc(var(--retraso, 0) * -1s);
+}
+.carta-sombra {
+  position: absolute; left: 50%; bottom: 9%; width: 46%; height: 9%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, .75), transparent 70%);
+  animation: sombra 3.4s ease-in-out infinite; animation-delay: calc(var(--retraso, 0) * -1s);
+}
+.carta-sello { z-index: 4; }
+
+/* Hechizos: círculo mágico que gira detrás del ícono */
+.tipo-hechizo .carta-sombra { display: none; }
+.tipo-hechizo .carta-aura {
+  width: 74%; background: none; mix-blend-mode: normal; opacity: .9; animation: girar 9s linear infinite;
+  border: .14em dashed color-mix(in srgb, var(--c1) 60%, white);
+  box-shadow: 0 0 .6em var(--c1), inset 0 0 .8em var(--c1);
+}
+.tipo-hechizo .carta-aura::before {
+  content: ''; position: absolute; inset: 14%; border-radius: 50%;
+  border: .1em solid color-mix(in srgb, var(--c1) 70%, white); box-shadow: 0 0 .5em var(--c1);
+  background: conic-gradient(from 0deg, transparent 0 20%, color-mix(in srgb, var(--c1) 40%, transparent) 25%, transparent 30% 70%, color-mix(in srgb, var(--c1) 40%, transparent) 75%, transparent 80%);
+  animation: girar 5s linear infinite reverse;
+}
+
+/* ---- Capa holográfica y reflejo de luz --------------------------------------------- */
+.carta-holo, .carta-reflejo { position: absolute; inset: .38em; border-radius: .75em; pointer-events: none; }
+/* El brillo holográfico va solo sobre la ilustración, como en las cartas impresas. */
+.carta-holo { inset: .73em .73em auto; height: 9.3em; border-radius: .6em; }
+.carta-holo {
+  z-index: 4; opacity: var(--holo, 0); mix-blend-mode: color-dodge;
+  background-image: repeating-linear-gradient(115deg, #ff3d6e 0%, #ffb300 4%, #3dff9a 8%, #3dd6ff 12%, #b23dff 16%, #ff3d6e 20%);
+  background-size: 320% 320%; background-position: var(--mx, 50%) var(--my, 50%);
+  filter: brightness(.85) contrast(1.4) saturate(1.4);
+  transition: opacity .25s;
+}
+.carta:not(.inclinada) .carta-holo { animation: holo-quieto 7s ease-in-out infinite alternate; }
+.carta.inclinada .carta-holo { opacity: calc(var(--holo, 0) * 1.6 + .08); }
+.rareza-rara { --holo: .18; }
+.rareza-epica { --holo: .28; }
+.rareza-mitica { --holo: .31; }
+.rareza-legendaria { --holo: .34; }
+.rareza-fusion { --holo: .36; }
+.rareza-legendaria .carta-holo {
+  background-image:
+    radial-gradient(circle, #fff 0 .06em, transparent .1em), radial-gradient(circle, #fff3b0 0 .05em, transparent .09em),
+    repeating-linear-gradient(115deg, #ffb300 0%, #fff1a8 5%, #ff7a00 10%, #ffe27a 15%, #ffb300 20%);
+  background-size: 1.3em 1.3em, .9em .9em, 320% 320%;
+}
+.carta-reflejo {
+  z-index: 5; opacity: 0; mix-blend-mode: screen; transition: opacity .25s;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, .15) 22%, transparent 50%);
+}
+.carta.inclinada .carta-reflejo { opacity: 1; }
+
+/* ---- Clima de cada reino -------------------------------------------------------------- */
+/* Hielo: nieve que cae */
+[data-reino="hielo"] :is(.carta-clima, .ficha-clima) {
+  background-image: radial-gradient(circle, #fff 0 .09em, transparent .14em), radial-gradient(circle, rgba(220, 250, 255, .85) 0 .06em, transparent .1em);
+  background-size: 2.4em 2.4em, 1.6em 1.6em; animation: nieve 6s linear infinite;
+}
+@keyframes nieve { to { background-position: 2.4em 4.8em, -1.6em 3.2em; } }
+
+/* Fuego: brasas que suben */
+[data-reino="fuego"] :is(.carta-clima, .ficha-clima) {
+  background-image: radial-gradient(circle, #fff1a0 0 .07em, transparent .12em), radial-gradient(circle, #ff7a1a 0 .1em, rgba(255, 60, 0, .4) .14em, transparent .22em);
+  background-size: 2em 2.6em, 3em 3.4em; mix-blend-mode: screen;
+  animation: brasas 2.6s linear infinite, titilar .5s ease-in-out infinite alternate;
+}
+@keyframes brasas { to { background-position: 2em -2.6em, -3em -6.8em; } }
+
+/* Bosque: luciérnagas que flotan */
+[data-reino="bosque"] :is(.carta-clima, .ficha-clima) {
+  background-image: radial-gradient(circle, #f2ff8a 0 .07em, rgba(200, 255, 100, .45) .12em, transparent .26em), radial-gradient(circle, #a8ffbf 0 .05em, transparent .18em);
+  background-size: 3.2em 2.8em, 2.2em 3.6em; mix-blend-mode: screen;
+  animation: luciernagas 6s ease-in-out infinite alternate, titilar 1.4s ease-in-out infinite alternate;
+}
+@keyframes luciernagas { to { background-position: 1.6em -1.4em, -2.2em 1.8em; } }
+
+/* Arcano: chispas mágicas que titilan */
+[data-reino="arcano"] :is(.carta-clima, .ficha-clima) {
+  background-image:
+    radial-gradient(circle, #fff 0 .05em, rgba(255, 150, 255, .6) .09em, transparent .2em),
+    radial-gradient(circle, #ffb3ff 0 .04em, transparent .14em), radial-gradient(circle, #b3e5ff 0 .04em, transparent .12em);
+  background-size: 2.6em 2.2em, 1.8em 2.9em, 3.4em 1.7em; background-position: 0 0, .7em .4em, 1.3em 1.1em; mix-blend-mode: screen;
+  animation: chispas 8s ease-in-out infinite alternate, titilar .7s steps(3) infinite alternate;
+}
+@keyframes chispas { to { background-position: 1.3em 1.1em, -.9em 1.5em, 1.7em -.8em; } }
+
+/* Corona: polvo dorado que sube despacio */
+[data-reino="corona"] :is(.carta-clima, .ficha-clima) {
+  background-image: radial-gradient(circle, #fff6c0 0 .06em, rgba(255, 210, 80, .5) .1em, transparent .2em), radial-gradient(circle, #ffd84a 0 .05em, transparent .12em);
+  background-size: 2.8em 3em, 2em 2.2em; mix-blend-mode: screen;
+  animation: polvo 7s linear infinite, titilar 1.8s ease-in-out infinite alternate;
+}
+@keyframes polvo { to { background-position: -2.8em -3em, 2em -4.4em; } }
+[data-reino="corona"] .carta-rayos { background: repeating-conic-gradient(from 0deg, rgba(255, 240, 180, .38) 0deg 6deg, transparent 6deg 18deg); }
+
+/* ---- Fichas del tablero ------------------------------------------------------------------ */
+.ficha-arte { position: relative; }
+.ficha-icono { position: relative; z-index: 3; animation: respirar 3.4s ease-in-out infinite; animation-delay: calc(var(--retraso, 0) * -1s); }
+.ficha .carta-aura { width: 80%; z-index: 1; }
+.ficha.rareza-epica::after, .ficha.rareza-mitica::after, .ficha.rareza-legendaria::after, .ficha.rareza-fusion::after {
+  content: ''; position: absolute; inset: -.55em; z-index: -2; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, var(--brillo) 0%, transparent 68%); animation: aura 2.4s ease-in-out infinite;
+}
+
+/* Golpe de luz al invocar */
+.anillo-invocacion {
+  position: fixed; z-index: 140; width: 160px; height: 160px; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%) scale(.2);
+  border: 6px solid var(--color); box-shadow: 0 0 30px var(--color), inset 0 0 30px var(--color);
+  animation: anillo .7s ease-out forwards;
+}
+.anillo-invocacion::after {
+  content: ''; position: absolute; inset: 20%; border-radius: 50%;
+  background: radial-gradient(circle, #fff, var(--color) 40%, transparent 70%);
+}
+@keyframes anillo { to { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .carta-clima, .ficha-clima, .carta-icono, .ficha-icono, .carta-aura, .carta-sombra, .carta-holo, .carta-rayos { animation: none !important; }
+}

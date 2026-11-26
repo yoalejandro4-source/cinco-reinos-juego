@@ -1,0 +1,49 @@
+/* Ilustraciones reales con "arte completo": la imagen cubre toda la carta y
+ * el nombre y el texto van encima, sobre un degradé oscuro. */
+@keyframes respirar-arte { from { scale: 1; } to { scale: 1.06; } }
+
+/* ---- Carta con arte completo -------------------------------------------------------- */
+.con-arte .carta-cuerpo { justify-content: flex-end; }
+.con-arte .carta-arte { position: absolute; inset: 0; height: auto; margin: 0; border-radius: inherit; }
+.carta-imagen {
+  position: absolute; inset: -4%; width: 108%; height: 108%; max-width: none; z-index: 1; object-fit: cover; object-position: 50% 30%;
+  transform: translate(calc(var(--px, 0) * -.55em), calc(var(--py, 0) * -.4em));
+  animation: respirar-arte 7s ease-in-out infinite alternate; animation-delay: calc(var(--retraso, 0) * -1s);
+}
+.con-arte .carta-rayos, .con-arte .carta-paisaje, .con-arte .carta-criatura { display: none; }
+.con-arte .carta-arte::after {
+  content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, transparent 18%, transparent 42%, rgba(0, 0, 0, .55) 60%, rgba(0, 0, 0, .9) 82%);
+  box-shadow: inset 0 0 1.4em rgba(0, 0, 0, .6), inset 0 0 0 .08em color-mix(in srgb, var(--c1) 60%, transparent);
+}
+.con-arte .carta-clima { opacity: .7; }
+.con-arte :is(.carta-nombre, .carta-tipo, .carta-texto) { position: relative; z-index: 5; }
+.con-arte .carta-nombre { background: linear-gradient(90deg, transparent, rgba(0, 0, 0, .45) 15%, rgba(0, 0, 0, .45) 85%, transparent); }
+.con-arte .carta-texto {
+  flex: none; min-height: 4.6em; background: rgba(5, 5, 15, .62); border-color: color-mix(in srgb, var(--c1) 35%, transparent);
+  backdrop-filter: blur(3px);
+}
+.con-arte .carta-sello { z-index: 5; top: .35em; bottom: auto; right: .45em; }
+
+/* El brillo holográfico cubre la ilustración pero se apaga antes del texto. */
+.con-arte .carta-holo {
+  inset: .38em; height: auto; border-radius: .75em;
+  -webkit-mask-image: linear-gradient(#000 45%, transparent 68%); mask-image: linear-gradient(#000 45%, transparent 68%);
+  opacity: calc(var(--holo, 0) * .3);
+}
+.con-arte.inclinada .carta-holo { opacity: calc(var(--holo, 0) * .9); }
+
+/* ---- Fichas del tablero ---------------------------------------------------------------- */
+.ficha-imagen {
+  position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; z-index: 1; object-fit: cover; object-position: 50% 28%;
+  animation: respirar-arte 6s ease-in-out infinite alternate; animation-delay: calc(var(--retraso, 0) * -1s);
+}
+.ficha.con-arte .ficha-icono, .ficha.con-arte .carta-aura { display: none; }
+.ficha.con-arte .ficha-arte::after {
+  content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 0 1.1em rgba(0, 0, 0, .75);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carta-imagen, .ficha-imagen { animation: none; }
+}

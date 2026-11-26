@@ -1,0 +1,84 @@
+/* Ajustes para jugar en el celular: que todo entre en pantalla, se pueda
+ * deslizar donde hace falta y no haya zoom ni menús raros al tocar. */
+html, body { -webkit-touch-callout: none; overscroll-behavior: none; touch-action: manipulation; }
+.pantalla { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.pf-fila input { -webkit-user-select: text; user-select: text; }
+
+/* La carta que tocaste una vez queda levantada (el segundo toque la juega) */
+.mano .carta.previa { --ty: -1.6em; --esc: 1.15; z-index: 26; box-shadow: 0 0 0 .3em #fff, 0 0 2em var(--oro); }
+
+/* La apertura de sobres se puede deslizar si las cartas no entran */
+.apertura { overflow-y: auto; justify-content: safe center; }
+
+@media (max-width: 700px) {
+  /* ---- Batalla: todo dentro del ancho del celular ---- */
+  .batalla { grid-template-rows: auto minmax(0, 1fr) auto minmax(0, 1fr) auto auto; padding: max(.25rem, env(safe-area-inset-top, 0px)) .3rem 0; }
+  .fila-info { gap: .3rem; min-width: 0; }
+  .info-jugador { flex: 1; min-width: 0; }
+  .info-jugador .nombre { font-size: .82rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .titulo-jugador { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  .mano-rival { padding-left: .6em; margin-left: 0; }
+  .mano-rival .dorso { font-size: 7px; margin-left: -1.2em; }
+  .mana { gap: .2rem; }
+  .mana-num { min-width: 0; font-size: .85rem; }
+  .mazo { padding: .25em .45em; font-size: .78rem; }
+  .boton-fusion { font-size: .65rem; padding: .45em .6em; }
+  .heroe { font-size: 10.5px; }
+  .mesa { min-height: 0; padding: .3rem .15rem; gap: .25rem; overflow: hidden; }
+  .ficha { font-size: 8.5px; }
+  .divisor { height: 2.6rem; }
+  .boton-turno { min-width: 0; padding: .5em 1em; }
+  .salir { font-size: .65rem; padding: .3em .55em; }
+  .boton-audio.en-divisor { width: 2rem; height: 2rem; font-size: .85rem; right: .2rem; }
+  .mano { height: 7.9rem; padding: 0 .3rem calc(.4rem + env(safe-area-inset-bottom, 0px)); }
+  .mano .carta { font-size: 5.8px; margin: 0 -1.5em; }
+  .mano .carta:hover { --ty: -1em; --esc: 1.1; }
+  .panel-fusion { bottom: 9rem; }
+
+  /* ---- Colección, tienda y apertura ---- */
+  .grilla .carta { font-size: 10px; }
+  .grilla { gap: 1rem .6rem; }
+  .col-carta .boton-fabricar { font-size: .62rem; }
+  .eco-sup { padding-right: 3rem; }
+  .eco-sup .titulo-2 { font-size: 1.3rem; }
+  .ap-slot .carta, .ap-dorso { font-size: 7.4px; }
+  .ap-cartas { gap: .45rem; }
+  .tv-grilla { grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); }
+  .pantalla { padding-left: max(.6rem, env(safe-area-inset-left, 0px)); padding-right: max(.6rem, env(safe-area-inset-right, 0px)); }
+
+  /* ---- Portada: barra en dos filas compactas ---- */
+  .barra-perfil { gap: .3rem .5rem; }
+  .bp-avatar { width: 2rem; height: 2rem; }
+  .bp-menu { margin-left: auto; }
+}
+
+/* Celulares bajitos (o con barra de navegación grande) */
+@media (max-width: 700px) and (max-height: 700px) {
+  .ficha { font-size: 7.5px; }
+  .mano { height: 7.8rem; }
+  .mano .carta { font-size: 5.3px; }
+  .heroe { font-size: 9.5px; }
+}
+
+/* Elegir reinos en el celular: dos por fila, más bajos, y el elegido no crece
+ * (al agrandarse se salía por el costado y quedaba cortado). */
+@media (max-width: 700px) {
+  .reinos-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; padding: .4rem; }
+  .reino-tile { min-height: 11.5rem; padding: .8rem .5rem .7rem; border-radius: 14px; }
+  .reino-tile .reino-icono { font-size: 1.7rem; }
+  .reino-tile .reino-nombre { font-size: .88rem; }
+  .reino-tile .reino-lema { font-size: .7rem; margin: .2rem 0; }
+  .reino-tile .reino-estilo { display: none; }
+  .reino-tile.elegido { transform: none; }
+  .reinos-grid .reino-tile:last-child:nth-child(odd) { grid-column: 1 / -1; min-height: 9rem; }
+}
+
+/* Celulares angostos (se dibujan a 480 de ancho, ver index.html): unidades del campo más
+ * grandes y la mano se aprieta cuando hay muchas cartas para que nunca se salga. */
+.celular-angosto .ficha { font-size: 10px; }
+.celular-angosto .mano .carta { font-size: 6.4px; }
+.celular-angosto .mano:has(> .carta:nth-child(6)) .carta { margin: 0 -2.2em; }
+.celular-angosto .mano:has(> .carta:nth-child(8)) .carta { margin: 0 -3.1em; }
+.celular-angosto .barra-perfil { max-width: calc(100vw - 3.4rem); }
+.celular-angosto .bp-menu { flex-wrap: wrap; gap: .35rem; }
+.celular-angosto .bp-boton { font-size: .68rem; padding: .42em 1em; }

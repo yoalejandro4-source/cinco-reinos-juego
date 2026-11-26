@@ -1,0 +1,37 @@
+/* Efectos de combate: lienzo de partículas, tajos, proyectiles, estelas y pedazos. */
+/* Botón de sonido (flotante fuera de la batalla, en la línea central durante la batalla) */
+.boton-audio {
+  width: 2.7rem; height: 2.7rem; border-radius: 50%; cursor: pointer; font-size: 1.2rem; line-height: 1;
+  display: grid; place-items: center; color: #fff; background: rgba(8, 4, 24, .72);
+  border: 1px solid rgba(255, 214, 120, .5); box-shadow: 0 0 14px rgba(255, 190, 80, .35);
+  transition: transform .15s, background .15s;
+}
+.boton-audio:hover { transform: scale(1.08); background: rgba(40, 20, 70, .85); }
+.boton-audio.flotante { position: fixed; z-index: 300; top: max(12px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); }
+.boton-audio.en-divisor { position: absolute; right: .4rem; top: 50%; transform: translateY(-50%); width: 2.3rem; height: 2.3rem; font-size: 1rem; }
+.boton-audio.en-divisor:hover { transform: translateY(-50%) scale(1.08); }
+
+#fx-combate { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 170; pointer-events: none; }
+
+.ficha.atacando { z-index: 60; filter: drop-shadow(0 1.2em 1em rgba(0, 0, 0, .7)) brightness(1.15); }
+
+.fantasma, .pedazo { position: fixed !important; margin: 0 !important; pointer-events: none; z-index: 150; animation: none !important; }
+.fantasma { filter: blur(1px) brightness(1.6); }
+.pedazo { z-index: 165; }
+
+.tajo {
+  position: fixed; z-index: 175; width: 180px; height: 9px; pointer-events: none; border-radius: 50%;
+  background: linear-gradient(90deg, transparent, var(--color) 25%, #fff 50%, var(--color) 75%, transparent);
+  box-shadow: 0 0 18px var(--color), 0 0 40px var(--color);
+  transform-origin: 50% 50%;
+}
+
+.proyectil {
+  position: fixed; z-index: 172; width: 30px; height: 30px; border-radius: 50%; pointer-events: none;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #fff 0 18%, var(--color) 45%, transparent 72%);
+  box-shadow: 0 0 20px var(--color), 0 0 45px var(--color);
+}
+.proyectil-hielo { border-radius: 30% 70% 30% 70%; }
+.proyectil-arcano { box-shadow: 0 0 20px var(--color), 0 0 60px #9b5cff; }
+.proyectil-fuego { width: 38px; height: 38px; background: radial-gradient(circle, #fff 0 15%, #ffd27a 30%, #ff5a1a 55%, transparent 72%); }

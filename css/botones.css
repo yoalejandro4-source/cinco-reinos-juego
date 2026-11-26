@@ -1,0 +1,88 @@
+/* Botones con el estilo de la portada: marco de oro con puntas hexagonales,
+ * interior de gema (rojo, azul o violeta) y letras doradas.
+ * Capas: ::before = marco dorado, ::after = gema interior, el texto queda arriba. */
+:root {
+  --marco-oro: linear-gradient(180deg, #fff6c4 0%, #f0c24a 22%, #a8700a 48%, #ffe08a 70%, #8a5400 100%);
+  --gema-roja: linear-gradient(180deg, #ff8a70 0%, #e3241f 30%, #a80c14 62%, #5c0409 100%);
+  --gema-azul: linear-gradient(180deg, #7fb6ff 0%, #2a6cf0 30%, #1240a8 62%, #071c52 100%);
+  --gema-violeta: linear-gradient(180deg, #d79bff 0%, #8f3cf0 30%, #5a17b0 62%, #2a0660 100%);
+  --gema-oscura: linear-gradient(180deg, #5a4670 0%, #2e1f45 45%, #150c24 100%);
+  --punta: 14px;
+}
+
+/* ---- Base común --------------------------------------------------------------------- */
+.boton, .volver, .salir, .bp-boton, .tab {
+  position: relative; isolation: isolate; z-index: 0;
+  background: none !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important;
+  color: #ffeab0; font-family: var(--fuente-titulo); font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  text-shadow: 0 1px 0 #3a1600, 0 0 8px rgba(255, 200, 100, .35), 0 2px 3px rgba(0, 0, 0, .8);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .55)) drop-shadow(0 0 10px var(--resplandor, rgba(255, 60, 40, .35)));
+  transition: transform .14s, filter .14s;
+  cursor: pointer;
+}
+.boton::before, .boton::after, .volver::before, .volver::after, .salir::before, .salir::after,
+.bp-boton::before, .bp-boton::after, .tab::before, .tab::after {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+}
+/* Marco de oro con puntas */
+.boton::before, .volver::before, .salir::before, .bp-boton::before, .tab::before {
+  inset: 0; background: var(--marco-oro);
+  clip-path: polygon(var(--punta) 0, calc(100% - var(--punta)) 0, 100% 50%, calc(100% - var(--punta)) 100%, var(--punta) 100%, 0 50%);
+}
+/* Gema interior, con un brillo arriba */
+.boton::after, .volver::after, .salir::after, .bp-boton::after, .tab::after {
+  inset: 3px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .38) 0%, rgba(255, 255, 255, .06) 42%, transparent 50%), var(--gema, var(--gema-roja));
+  clip-path: polygon(calc(var(--punta) - 2px) 0, calc(100% - var(--punta) + 2px) 0, 100% 50%, calc(100% - var(--punta) + 2px) 100%, calc(var(--punta) - 2px) 100%, 0 50%);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, .5);
+}
+.boton:hover:not(:disabled), .volver:hover, .salir:hover, .bp-boton:hover, .tab:hover {
+  transform: translateY(-2px); filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .55)) drop-shadow(0 0 16px var(--resplandor, rgba(255, 60, 40, .55))) brightness(1.12);
+}
+.boton:active:not(:disabled), .volver:active, .salir:active, .bp-boton:active, .tab:active { transform: translateY(2px) scale(.98); }
+.boton:focus-visible, .volver:focus-visible, .salir:focus-visible, .bp-boton:focus-visible, .tab:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.boton:disabled { filter: grayscale(.85) brightness(.55) drop-shadow(0 3px 4px rgba(0, 0, 0, .5)); cursor: not-allowed; }
+
+/* ---- Colores (como los tres botones de la portada) --------------------------------------- */
+.boton { --gema: var(--gema-roja); --resplandor: rgba(255, 60, 40, .4); padding: .9em 2.6em; }
+.boton.secundario, .bp-boton.mazo { --gema: var(--gema-azul); --resplandor: rgba(60, 130, 255, .45); }
+.boton.boton-fusion, .boton.terciario { --gema: var(--gema-violeta); --resplandor: rgba(170, 80, 255, .5); }
+.boton.boton-fusion.activo { --resplandor: rgba(255, 120, 255, .9); }
+.bp-boton.tienda { --gema: var(--gema-roja); }
+.bp-boton.online { --gema: linear-gradient(180deg, #8affc4 0%, #18b86a 30%, #0b7a44 62%, #033d20 100%); --resplandor: rgba(40, 220, 120, .45); }
+.bp-boton.aventura { --gema: var(--gema-violeta); --resplandor: rgba(170, 80, 255, .5); }
+.volver, .salir { --gema: var(--gema-oscura); --resplandor: rgba(255, 200, 100, .25); --punta: 10px; }
+/* Estos dos van ubicados en una esquina; la base de arriba no debe moverlos */
+.volver, .salir { position: absolute; }
+.eco-sup .volver { position: static; }
+
+/* ---- Tamaños ----------------------------------------------------------------------------------- */
+.boton-chico, .boton.boton-chico { --punta: 10px; padding: .65em 1.7em; font-size: .78rem; }
+.bp-boton { --punta: 10px; padding: .55em 1.4em; font-size: .85rem; color: #ffeab0; }
+.volver { --punta: 10px; padding: .5em 1.4em .5em 1.3em; font-size: .8rem; }
+.salir { padding: .4em 1.1em; font-size: .68rem; }
+.boton-turno { padding: .8em 2.6em; font-size: 1rem; min-width: 14rem; }
+.boton-fusion { padding: .65em 1.6em; }
+.batalla.mi-turno .boton-turno { animation: llamar-oro 1.8s ease-in-out infinite; }
+@keyframes llamar-oro {
+  50% { filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .55)) drop-shadow(0 0 22px rgba(255, 120, 40, .95)) brightness(1.12); }
+}
+
+/* ---- Pestañas: marco de oro con la gema del color de cada reino ---------------------------------- */
+.tab { --punta: 9px; --gema: linear-gradient(180deg, color-mix(in srgb, var(--c1, #ff4fd8) 70%, white) 0%, var(--c2, #7a1cff) 45%, var(--c3, #2a0660) 100%);
+  --resplandor: color-mix(in srgb, var(--c1, #ff4fd8) 45%, transparent); padding: .55em 1.3em; font-size: .82rem; opacity: .72; text-transform: none; }
+.tab.activa { opacity: 1; transform: translateY(-2px); --resplandor: var(--c1, #ff4fd8); }
+.tab-fusion { --gema: linear-gradient(115deg, #ff3d6e, #ffb300, #3dff9a, #3dd6ff, #b23dff); }
+
+/* ---- Botón redondo de sonido con anillo de oro ---------------------------------------------------- */
+.boton-audio, .boton-audio:hover { background: radial-gradient(circle at 40% 30%, #5a4670, #150c24 70%) padding-box, var(--marco-oro) border-box; border: 3px solid transparent; }
+
+/* ---- Celular ------------------------------------------------------------------------------------- */
+@media (max-width: 700px) {
+  .boton { padding: .8em 2em; }
+  .boton.boton-turno { min-width: 0; padding: .6em 1.7em; font-size: .78rem; }
+  .boton.boton-fusion { padding: .55em 1.3em; font-size: .62rem; }
+  .salir { padding: .4em 1.1em; font-size: .6rem; }
+  .bp-boton { padding: .45em 1.1em; font-size: .72rem; }
+  .tab { padding: .5em 1em; font-size: .72rem; }
+}
