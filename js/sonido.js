@@ -167,6 +167,9 @@
 
   // ---- Piezas de sonido -------------------------------------------------------------
   const midi = (n) => 440 * Math.pow(2, (n - 69) / 12);
+  const COMBO_MS = 2500; // destrucciones seguidas dentro de este tiempo suben de tono
+  const COMBO_MAX = 5;
+  const combo = { n: 0, ultima: 0 };
 
   function conectar(nodo, bus, reverb) {
     nodo.connect(bus);
@@ -266,10 +269,22 @@
     congelar: () => { [2637, 3136, 3951].forEach((f, i) => tono({ f, dur: 0.4, vol: 0.04, delay: i * 0.03, reverb: 0.5 })); ruido({ dur: 0.25, vol: 0.08, f: 7000, tipo: 'highpass' }); },
     curar: () => arpegio([72, 76, 79, 84], 0.07, { tipo: 'triangle', vol: 0.06, dur: 0.6, reverb: 0.6 }),
     buff: () => { tono({ f: 330, f1: 660, dur: 0.3, vol: 0.07, tipo: 'triangle', reverb: 0.4 }); tono({ f: 494, f1: 988, dur: 0.3, vol: 0.06, tipo: 'triangle', delay: 0.08, reverb: 0.4 }); },
+    // Destrucción de una carta: golpe grave + cristal que estalla + campanita de premio que sube.
+    // Si caen varias seguidas, cada una suena más aguda (combo).
     romper: () => {
-      for (let i = 0; i < 12; i++) tono({ f: 1800 + Math.random() * 3500, dur: 0.05 + Math.random() * 0.12, vol: 0.035, delay: Math.random() * 0.12 });
-      ruido({ dur: 0.4, vol: 0.2, f: 4500, tipo: 'highpass' });
-      tambor(85, 0.22, 0.25);
+      const ahora = performance.now();
+      combo.n = ahora - combo.ultima < COMBO_MS ? Math.min(COMBO_MAX, combo.n + 1) : 0;
+      combo.ultima = ahora;
+      const sube = combo.n * 2; // semitonos
+      tambor(55, 0.5, 0.45);
+      tono({ f: 140, f1: 38, dur: 0.35, vol: 0.22, tipo: 'sine' });
+      ruido({ dur: 0.18, vol: 0.28, f: 2200, q: 1.6, tipo: 'bandpass' });
+      ruido({ dur: 0.5, vol: 0.14, f: 6000, tipo: 'highpass' });
+      for (let i = 0; i < 14; i++) tono({ f: 2200 + Math.random() * 4200, dur: 0.04 + Math.random() * 0.14, vol: 0.03, delay: 0.02 + Math.random() * 0.16, tipo: 'triangle' });
+      const notas = [76, 79, 84, 88].map((n) => n + sube);
+      if (combo.n >= 2) notas.push(91 + sube);
+      arpegio(notas, 0.045, { tipo: 'triangle', vol: 0.07, dur: 0.35, delay: 0.08, reverb: 0.5 });
+      campana(midi(notas[notas.length - 1] + 12), 0.08, 1.1, { delay: 0.08 + notas.length * 0.045, reverb: 0.7 });
     },
     fusion: () => {
       ruido({ dur: 1.0, vol: 0.14, f: 200, f1: 6000, tipo: 'lowpass', at: 0.6 });

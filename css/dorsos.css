@@ -31,3 +31,11 @@
 .liviano .con-arte.rareza-mitica .carta-marco-img { background-image: url('../arte/marcos/mini/mitica.webp'); }
 .liviano .con-arte.rareza-legendaria .carta-marco-img { background-image: url('../arte/marcos/mini/legendaria.webp'); }
 .liviano .con-arte.rareza-token .carta-marco-img { background-image: url('../arte/marcos/mini/comun.webp'); }
+
+/* El dibujo se acomoda dentro de la ventana de cada marco (antes el marco tapaba los bordes) */
+.con-arte.rareza-comun .carta-imagen { top: 5.1%; right: auto; bottom: auto; left: 10.8%; width: calc(100% - 10.8% - 11.1%); height: calc(100% - 5.1% - 5.9%); object-position: 50% 35%; }
+.con-arte.rareza-rara .carta-imagen { top: 5.5%; right: auto; bottom: auto; left: 10.3%; width: calc(100% - 10.3% - 10.5%); height: calc(100% - 5.5% - 5.9%); object-position: 50% 35%; }
+.con-arte.rareza-epica .carta-imagen { top: 10.0%; right: auto; bottom: auto; left: 16.3%; width: calc(100% - 16.3% - 16.3%); height: calc(100% - 10.0% - 10.6%); object-position: 50% 35%; }
+.con-arte.rareza-mitica .carta-imagen { top: 9.0%; right: auto; bottom: auto; left: 16.0%; width: calc(100% - 16.0% - 16.5%); height: calc(100% - 9.0% - 10.2%); object-position: 50% 35%; }
+.con-arte.rareza-legendaria .carta-imagen { top: 7.8%; right: auto; bottom: auto; left: 14.6%; width: calc(100% - 14.6% - 14.6%); height: calc(100% - 7.8% - 9.2%); object-position: 50% 35%; }
+.con-arte.rareza-token .carta-imagen { top: 5.1%; right: auto; bottom: auto; left: 10.8%; width: calc(100% - 10.8% - 11.1%); height: calc(100% - 5.1% - 5.9%); }

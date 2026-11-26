@@ -500,6 +500,9 @@
   /** Punto de extensión para otros módulos: suman pantallas y acciones al controlador. */
   const UI = {
     estado: ui, render, ir, empezarPartida, empezarRemota, aplicarRemoto, sonar,
+    /** Jugar una carta de la mano soltándola en el tablero (js/arrastre.js): sin el toque de vista previa. */
+    jugarArrastrada(i) { if (!puedoActuar()) return false; ui.vistaPrevia = i; clickCarta(i); return true; },
+    puedoJugar: () => puedoActuar(),
     alTerminar: null, nombreJugador: null, guardia: null,
     agregar({ vistas, acciones: nuevas }) {
       Object.assign(VISTAS, vistas || {});

@@ -172,6 +172,24 @@
     </button>`;
   }
 
+  /** Fila de mazos guardados: elegir, renombrar y comprar más espacios. */
+  function selectorMazos(p) {
+    if (!raiz.Mazos) return '';
+    const Mz = raiz.Mazos;
+    const datos = Mz.alDia(p);
+    const botones = datos.mazos.map((m, i) => {
+      const listo = E.validarMazo({ ...p, mazo: m.cartas }).ok;
+      return `<button class="mz-slot ${i === datos.mazoActivo ? 'activo' : ''}" data-accion="mazo-elegir" data-i="${i}">
+        <b>${esc(m.nombre)}</b><small>${m.cartas.length}/${E.REGLAS.tamanoMazo} ${listo ? '✔' : ''}</small></button>`;
+    }).join('');
+    const precio = Mz.precioSiguiente(p);
+    const comprar = precio ? `<button class="mz-slot comprar" data-accion="mazo-comprar-espacio"><b>➕ Nuevo mazo</b><small>${precio} 💰</small></button>` : '';
+    const activo = datos.mazos[datos.mazoActivo];
+    return `<div class="mz-selector">${botones}${comprar}</div>
+      <div class="mz-nombre"><input id="mz-nombre" type="text" maxlength="${Mz.REGLAS.largoNombre}" value="${esc(activo.nombre)}" aria-label="Nombre del mazo">
+        <button class="boton boton-chico secundario" data-accion="mazo-renombrar">✏️ Guardar nombre</button></div>`;
+  }
+
   function pantallaMazo(p, tab, validacion) {
     const enMazo = p.mazo.reduce((acc, id) => ({ ...acc, [id]: (acc[id] || 0) + 1 }), {});
     const tabs = Object.values(D.REINOS)
@@ -189,7 +207,8 @@
     const estado = validacion.ok ? '<div class="mm-ok">✔ Mazo listo para jugar</div>'
       : `<ul class="mz-errores">${validacion.errores.slice(0, 3).map((e) => `<li>${esc(e)}</li>`).join('')}</ul>`;
     return `<div class="pantalla armado">
-      ${encabezado('Mi mazo', p)}
+      ${encabezado('Mis mazos', p)}
+      ${selectorMazos(p)}
       <div class="armado-cuerpo">
         <section class="armado-coleccion">
           <div class="tabs">${tabs}</div>

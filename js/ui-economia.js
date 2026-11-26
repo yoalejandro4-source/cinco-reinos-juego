@@ -21,7 +21,7 @@
   const avisarGuardado = []; // otros módulos (la cuenta) se enteran de cada guardado
 
   function guardarPerfil(nuevo, opciones) {
-    perfil = nuevo;
+    perfil = raiz.Mazos ? raiz.Mazos.alDia(nuevo) : nuevo; // el mazo activo queda guardado en su espacio
     UI.nombreJugador = perfil.nombre;
     if (raiz.Tienda) R.ponerApariencia(0, raiz.Tienda.apariencia(perfil));
     if (!almacen || !E.guardar(almacen, perfil)) Fx.aviso('⚠️ No se pudo guardar el progreso en este dispositivo');
@@ -169,6 +169,15 @@
       'mazo-vaciar': () => aplicar(E.vaciarMazo(perfil), 'Mazo vacío'),
       'mazo-auto': () => aplicar(E.autocompletarMazo(perfil), 'Mazo completado'),
       'jugar-mazo': jugarConMiMazo,
+      'mazo-elegir': (el) => { if (aplicar(raiz.Mazos.elegir(perfil, Number(el.dataset.i)))) { UI.sonar('carta'); UI.render(); } },
+      'mazo-comprar-espacio': () => {
+        const r = raiz.Mazos.comprarEspacio(perfil);
+        if (aplicar(r, `✔ Nuevo espacio de mazo (-${r.precio || 0} 💰)`)) { UI.sonar('monedas'); UI.render(); }
+      },
+      'mazo-renombrar': () => {
+        const nombre = (document.getElementById('mz-nombre') || {}).value || '';
+        if (aplicar(raiz.Mazos.renombrar(perfil, perfil.mazoActivo || 0, nombre), '✔ Nombre guardado')) UI.render();
+      },
       'comprar-cosmetico': (el) => {
         const c = raiz.Tienda.porId[el.dataset.id];
         if (aplicar(raiz.Tienda.comprar(perfil, el.dataset.id), `✔ Compraste ${c.nombre}`)) { UI.sonar('monedas'); UI.sonar('buff'); }
