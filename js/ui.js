@@ -349,7 +349,7 @@
     // En pantallas táctiles no hay "pasar el mouse": el primer toque muestra la carta grande.
     if (esTactil() && ui.vistaPrevia !== i) {
       ui.vistaPrevia = i;
-      Fx.inspector(R.htmlCarta(carta));
+      if (raiz.Lupa) raiz.Lupa.mostrar(carta); else Fx.inspector(R.htmlCarta(carta));
       Fx.aviso(M.motivoNoJugable(s, HUMANO, i) || 'Tocá de nuevo para jugarla');
       render();
       return;
@@ -481,6 +481,7 @@
   const RESTOS = '.fantasma, .pedazo, .tajo, .proyectil, .overlay-jugada, .overlay-fusion, .banner, .flotante, .cine';
   function limpiarRestos() {
     Fx.ocultarInspector();
+    if (raiz.Lupa) raiz.Lupa.ocultar();
     document.querySelectorAll(RESTOS).forEach((el) => el.remove());
     const capa = document.getElementById('capa-apertura');
     if (capa) capa.remove();

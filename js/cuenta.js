@@ -85,10 +85,26 @@
     st.nube = 'pendiente'; // servidor apagado o todavía sin esta función: se sigue con lo guardado acá
   }
 
+  /** Regalos del dueño del servidor (gemas u oro): se suman al progreso y se guardan en la cuenta. */
+  async function cobrarRegalos() {
+    if (!Red.sesion()) return;
+    const r = await Red.pedir('/api/regalos/cobrar', 'POST');
+    if (!r.ok || !Array.isArray(r.regalos) || !r.regalos.length) return;
+    const gemas = r.regalos.reduce((t, g) => t + (g.gemas || 0), 0);
+    const oro = r.regalos.reduce((t, g) => t + (g.oro || 0), 0);
+    const p = raiz.Perfil.actual();
+    raiz.Perfil.guardar({ ...p, gemas: p.gemas + gemas, oro: p.oro + oro }, { sinAvisar: true });
+    await subir();
+    UI.render();
+    UI.sonar('victoria');
+    Fx.aviso(`🎁 ¡Recibiste un regalo! ${gemas ? `+${gemas} 💎 ` : ''}${oro ? `+${oro} 💰` : ''}`);
+  }
+
   async function alEntrar() {
     Red.conectar();
     await sincronizar();
     UI.ir('inicio');
+    await cobrarRegalos();
   }
 
   // ---- Acciones -------------------------------------------------------------------------------------
@@ -128,6 +144,7 @@
   });
 
   raiz.Perfil.alGuardar(() => { if (Red.sesion()) programarSubida(); });
+  Red.escuchar('regalo', () => cobrarRegalos());
   document.addEventListener('visibilitychange', () => { if (document.hidden && relojSubida) subir(); });
 
   raiz.Cuenta = Object.freeze({ cerrarSesion, subir, estadoNube: () => st.nube });

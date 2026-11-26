@@ -31,7 +31,7 @@
   const tieneArte = (id) => ARTE.has(archivoArte(id));
   // En modo liviano (celular) las cartas usan miniaturas: 4 veces menos píxeles en memoria.
   const carpetaArte = () => (document.documentElement.classList.contains('liviano') ? 'arte/mini' : 'arte');
-  const imagenArte = (id, clase) => `<img class="${clase}" src="${carpetaArte()}/${archivoArte(id)}.webp" alt="" draggable="false" loading="lazy" decoding="async">`;
+  const imagenArte = (id, clase, grande) => `<img class="${clase}" src="${grande ? 'arte' : carpetaArte()}/${archivoArte(id)}.webp" alt="" draggable="false" loading="lazy" decoding="async">`;
 
   // Ilustración de la legendaria de cada reino, para fondos y retratos.
   const LEYENDA = Object.freeze({ bosque: 'b8', corona: 'c8', hielo: 'h8', arcano: 'a8', fuego: 'f8' });
@@ -48,14 +48,14 @@
     const o = opciones || {};
     const base = D.porId[c.id] || c;
     const conArte = tieneArte(c.id);
-    const clases = ['carta', `rareza-${c.rareza}`, `tipo-${c.tipo}`, conArte ? 'con-arte' : ''].concat(o.clases || []);
+    const clases = ['carta', `rareza-${c.rareza}`, `tipo-${c.tipo}`, conArte ? 'con-arte' : '', o.grande ? 'carta-grande' : ''].concat(o.clases || []);
     const stats = c.tipo === 'unidad'
       ? `<div class="gema gema-atq ${claseStat(c.atq, base.atq)}">${c.atq}</div><div class="gema gema-vida ${claseStat(c.vida, base.vida)}">${c.vida}</div>`
       : '';
     return `<div class="${clases.join(' ')}" data-reino="${c.reino}" style="${estiloCarta(c)};--retraso:${retraso(c.id)};${o.estilo || ''}" ${o.attrs || ''}>
       <div class="carta-cuerpo">
         <div class="carta-arte">
-          <div class="carta-rayos"></div><div class="carta-paisaje"></div>${conArte ? imagenArte(c.id, 'carta-imagen') : ''}<div class="carta-clima"></div><div class="carta-marco-img"></div>
+          <div class="carta-rayos"></div><div class="carta-paisaje"></div>${conArte ? imagenArte(c.id, 'carta-imagen', o.grande) : ''}<div class="carta-clima"></div><div class="carta-marco-img"></div>
           <div class="carta-criatura"><div class="carta-aura"></div><div class="carta-sombra"></div><span class="carta-icono">${c.icono}</span></div>
           <span class="carta-sello">${sellos(c)}</span>
         </div>
@@ -146,7 +146,7 @@
         <button class="portada-boton cartas" data-accion="ir" data-destino="coleccion" aria-label="Cartas y fusiones"></button>
         <button class="portada-boton ayuda" data-accion="ir" data-destino="ayuda" aria-label="Cómo se juega"></button>
       </div>
-      <p class="version portada-version">v0.7.3</p>
+      <p class="version portada-version">v0.7.4</p>
     </div>`;
   }
 

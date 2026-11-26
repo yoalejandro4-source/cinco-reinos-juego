@@ -228,6 +228,7 @@
   function ocultarInspector() {
     const d = document.getElementById('inspector');
     if (d) d.classList.remove('visible');
+    if (raiz.Lupa) raiz.Lupa.ocultar();
   }
 
   function iniciarParticulas() {

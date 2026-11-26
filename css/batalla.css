@@ -190,3 +190,17 @@
 #cuenta-rendirse .cr-seg { color: #ff6a7a; font-size: 1.5rem; }
 #cuenta-rendirse .cr-barra { width: 100%; height: .5rem; border-radius: 999px; background: rgba(0, 0, 0, .6); overflow: hidden; }
 #cuenta-rendirse .cr-barra i { display: block; height: 100%; background: linear-gradient(90deg, #ff2a40, #ffb02e); transform-origin: left; transition: transform .2s linear; }
+
+/* ---- Lupa: carta grande al costado (js/lupa.js) ------------------------------------------------ */
+#lupa-fondo { position: fixed; inset: 0; z-index: 255; background: rgba(0, 0, 0, .45); animation: cine-entra .15s ease-out; }
+#lupa { --ancho: min(58vw, 330px); position: fixed; top: 50%; z-index: 256; width: var(--ancho); transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: .5rem; animation: lupa-entra .22s cubic-bezier(.2, 1.3, .4, 1); }
+#lupa.der { right: max(.5rem, env(safe-area-inset-right, 0px)); }
+#lupa.izq { left: max(.5rem, env(safe-area-inset-left, 0px)); }
+@keyframes lupa-entra { from { opacity: 0; transform: translateY(-50%) scale(.6); } }
+#lupa .carta { font-size: calc(var(--ancho) / 15); margin: 0 auto; box-shadow: 0 0 0 .15em rgba(255, 220, 140, .6), 0 1em 2.5em rgba(0, 0, 0, .8); }
+#lupa .carta * { animation: none; }
+.lupa-claves { list-style: none; display: flex; flex-direction: column; gap: .3rem; padding: .55rem .65rem; border-radius: 12px;
+  background: rgba(14, 8, 28, .94); border: 1px solid rgba(255, 210, 120, .4); font-size: .78rem; line-height: 1.3; color: #efe6ff; }
+.lupa-claves b { color: #ffd45a; margin-right: .25rem; }
+.lupa-cerrar { text-align: center; font-size: .7rem; color: #d8ccf0; text-shadow: 0 1px 2px #000; }
