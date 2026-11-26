@@ -231,44 +231,65 @@
     if (raiz.Lupa) raiz.Lupa.ocultar();
   }
 
+  // Partículas del menú: cada color se dibuja una vez en un "sello" y después solo se estampa
+  // (crear degradados en cada cuadro era lo más caro). Se duermen en batalla, con la
+  // ventana oculta o en modo liviano, y van a ~30 cuadros por segundo.
+  const PARTICULAS = 40;
+  const CUADRO_PARTICULAS_MS = 33;
+  function selloParticula(color) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 32;
+    const x = c.getContext('2d');
+    const g = x.createRadialGradient(16, 16, 0, 16, 16, 16);
+    g.addColorStop(0, color);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = g;
+    x.fillRect(0, 0, 32, 32);
+    return c;
+  }
+
   function iniciarParticulas() {
     if (reducido || liviano) return;
     const canvas = document.createElement('canvas');
     canvas.id = 'particulas';
     document.body.prepend(canvas);
     const ctx = canvas.getContext('2d');
-    const colores = ['#ffb02e', '#ff4d2e', '#7af4ff', '#ea85ff', '#2bff88', '#ffd84a'];
-    const dpr = Math.min(2, raiz.devicePixelRatio || 1);
+    const sellos = ['#ffb02e', '#ff4d2e', '#7af4ff', '#ea85ff', '#2bff88', '#ffd84a'].map(selloParticula);
     let w = 0;
     let h = 0;
     const medir = () => {
       w = raiz.innerWidth; h = raiz.innerHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width = w; canvas.height = h;
     };
     medir();
     raiz.addEventListener('resize', medir);
     const nueva = (alAzar) => ({
       x: Math.random() * w, y: alAzar ? Math.random() * h : h + 10, r: 1 + Math.random() * 2.4,
-      v: 0.25 + Math.random() * 0.7, d: (Math.random() - 0.5) * 0.3, f: Math.random() * 6.28,
-      c: colores[Math.floor(Math.random() * colores.length)],
+      v: 0.5 + Math.random() * 1.4, d: (Math.random() - 0.5) * 0.6, f: Math.random() * 6.28,
+      s: sellos[Math.floor(Math.random() * sellos.length)],
     });
-    const parts = Array.from({ length: 60 }, () => nueva(true));
-    const paso = () => {
+    const parts = Array.from({ length: PARTICULAS }, () => nueva(true));
+    const dormida = () => document.hidden || esLiviano() || (raiz.UI && raiz.UI.estado && raiz.UI.estado.pantalla === 'batalla');
+    let ultimo = 0;
+    let vacia = false;
+    const paso = (t) => {
+      raiz.requestAnimationFrame(paso);
+      if (t - ultimo < CUADRO_PARTICULAS_MS) return;
+      ultimo = t;
+      if (dormida()) {
+        if (!vacia) { ctx.clearRect(0, 0, w, h); vacia = true; }
+        return;
+      }
+      vacia = false;
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'lighter';
-      parts.forEach((p, i) => {
-        p.y -= p.v; p.f += 0.02; p.x += p.d + Math.sin(p.f) * 0.3;
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        p.y -= p.v; p.f += 0.04; p.x += p.d + Math.sin(p.f) * 0.6;
         if (p.y < -12) parts[i] = nueva(false);
-        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-        g.addColorStop(0, p.c);
-        g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      raiz.requestAnimationFrame(paso);
+        const lado = p.r * 8;
+        ctx.drawImage(p.s, p.x - lado / 2, p.y - lado / 2, lado, lado);
+      }
     };
     raiz.requestAnimationFrame(paso);
   }

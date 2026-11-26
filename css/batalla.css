@@ -213,3 +213,9 @@
 .mesa-propia.zona-soltar { box-shadow: inset 0 0 0 3px #ffd45a, inset 0 0 40px rgba(255, 200, 80, .35) !important; background: rgba(255, 200, 80, .08); }
 .mesa-propia.zona-soltar::after { content: 'Soltá para jugar'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   font-family: var(--fuente-titulo); font-weight: 900; color: #ffe59a; text-shadow: 0 2px 4px #000; pointer-events: none; }
+
+/* Rendimiento en la PC: durante la batalla las cartas quedan quietas por dentro (clima, holo,
+ * arte que respira, marcos que giran) salvo la que tenés bajo el mouse. Cada una de esas
+ * animaciones repinta la carta entera en cada cuadro y con muchas cartas en mesa se traba. */
+.batalla .carta:not(.inclinada):not(:hover) *, .batalla .ficha:not(:hover) * { animation: none !important; }
+.batalla .carta:not(:hover)[class*="marco-"], .batalla .ficha:not(:hover) [class*="marco-"] { animation: none !important; }

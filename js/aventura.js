@@ -61,8 +61,9 @@
   /** Datos del rival para empezar un combate de aventura. */
   function rival(reino, etapa) {
     const cap = capitulo(reino);
+    const carta = Datos.CARTAS.find((c) => c.nombre === cap.rivales[etapa]);
     return {
-      nombre: cap.rivales[etapa], reinos: [cap.reino, cap.aliado], mazo: mazoRival(reino, etapa),
+      nombre: cap.rivales[etapa], reinos: [cap.reino, cap.aliado], mazo: mazoRival(reino, etapa), retrato: carta ? carta.id : null,
       vida: ETAPAS[etapa].vida, aventura: { reino, etapa },
     };
   }

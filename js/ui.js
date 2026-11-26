@@ -141,6 +141,8 @@
       nombres: [UI.nombreJugador || 'Vos', rival ? rival.nombre : 'Rival IA'], reinos: [reinos, rival ? rival.reinos : reinosAlAzar()],
       mazos: [mazoPropio || null, rival ? rival.mazo : null], vidas: [null, rival ? rival.vida : null], ia: [false, true],
     });
+    // El rival de la aventura se muestra con su propio personaje al lado del nombre
+    if (rival && rival.retrato) ui.estado.jugadores[RIVAL].retrato = rival.retrato;
     limpiarSeleccion();
     ui.ocupado = true;
     ui.pantalla = 'batalla';

@@ -17,6 +17,9 @@
   </script>
   <title>Guerra de los Cinco Reinos</title>
   <link rel="icon" href="icono.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1b1030">
+  <link rel="apple-touch-icon" href="icono-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cinzel+Decorative:wght@700;900&display=swap">
   <link rel="stylesheet" href="css/base.css">
@@ -39,6 +42,24 @@
 <link rel="stylesheet" href="css/online.css">
 <link rel="stylesheet" href="css/cuenta.css">
 <link rel="stylesheet" href="css/liviano.css">
+  <script>
+    /* Versión web (https): se puede instalar como app. En la APK y en el ZIP no hace falta. */
+    if (location.protocol === 'https:' && 'serviceWorker' in navigator) {
+      window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+    }
+    /* Botón "Instalar el juego" cuando el navegador lo permite (Chrome y Edge en la PC). */
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      if (document.getElementById('boton-instalar')) return;
+      var b = document.createElement('button');
+      b.id = 'boton-instalar';
+      b.textContent = '⬇ Instalar el juego';
+      b.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9000;padding:.55em 1em;border-radius:999px;border:1px solid #ffd45a;background:#2a1a48;color:#fff3d0;font:700 14px system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.6)';
+      b.onclick = function () { e.prompt(); e.userChoice.finally(function () { b.remove(); }); };
+      document.body.appendChild(b);
+    });
+    window.addEventListener('appinstalled', function () { var b = document.getElementById('boton-instalar'); if (b) b.remove(); });
+  </script>
 </head>
 <body>
   <div id="fondo"></div>

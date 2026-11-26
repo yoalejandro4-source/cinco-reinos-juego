@@ -9,6 +9,14 @@
   const RENDIMIENTOS = ['auto', 'liviano', 'completo'];
   const ESPERA_CIERRE_MS = 400;
   const tactil = !!(raiz.matchMedia && raiz.matchMedia('(pointer: coarse)').matches);
+  // Modo automático en la PC: si el juego anda a menos de FPS_MINIMO durante dos tandas
+  // seguidas, pasa solo a liviano y se acuerda (hasta que elijas otra cosa en Ajustes).
+  const CLAVE_AUTO = 'cinco-reinos-auto-liviano';
+  const FPS_MINIMO = 40;
+  const TANDA_MS = 5000;
+  const TANDAS_LENTAS = 2;
+  const pocaMaquina = (raiz.navigator && ((raiz.navigator.hardwareConcurrency || 8) <= 2 || (raiz.navigator.deviceMemory || 8) <= 2));
+  const autoLiviano = () => { try { return raiz.localStorage.getItem(CLAVE_AUTO) === '1'; } catch (e) { return false; } };
 
   function leer() {
     try {
@@ -36,11 +44,13 @@
     if (raiz.Sonido) raiz.Sonido.volumenes(actual.musica, actual.efectos);
     const html = document.documentElement;
     html.classList.toggle('portada-estatica', actual.portada === 'estatica');
-    const liviano = actual.rendimiento === 'liviano' || (actual.rendimiento === 'auto' && tactil);
+    const liviano = actual.rendimiento === 'liviano' || (actual.rendimiento === 'auto' && (tactil || pocaMaquina || autoLiviano()));
     html.classList.toggle('liviano', liviano);
   }
 
   function cambiar(cambios) {
+    // Elegir el rendimiento a mano borra lo que decidió el modo automático
+    if (cambios.rendimiento) { try { raiz.localStorage.removeItem(CLAVE_AUTO); } catch (e) { /* nada */ } }
     actual = { ...actual, ...cambios };
     guardar();
     aplicar();
@@ -116,6 +126,33 @@
     document.body.appendChild(p);
   }
 
+  /** Mide los cuadros por segundo mientras la ventana está a la vista. */
+  function vigilarRendimiento() {
+    let cuadros = 0;
+    let inicio = 0;
+    let lentas = 0;
+    const paso = (t) => {
+      const html = document.documentElement;
+      if (actual.rendimiento !== 'auto' || html.classList.contains('liviano')) { inicio = 0; raiz.requestAnimationFrame(paso); return; }
+      if (document.hidden) { inicio = 0; raiz.requestAnimationFrame(paso); return; }
+      if (!inicio) { inicio = t; cuadros = 0; }
+      cuadros++;
+      if (t - inicio >= TANDA_MS) {
+        const fps = (cuadros * 1000) / (t - inicio);
+        lentas = fps < FPS_MINIMO ? lentas + 1 : 0;
+        inicio = 0;
+        if (lentas >= TANDAS_LENTAS) {
+          try { raiz.localStorage.setItem(CLAVE_AUTO, '1'); } catch (e) { /* nada */ }
+          aplicar();
+          if (raiz.Fx) raiz.Fx.aviso('⚡ Activé el modo liviano para que el juego no se trabe (lo cambiás en ⚙️ Ajustes)');
+        }
+      }
+      raiz.requestAnimationFrame(paso);
+    };
+    raiz.requestAnimationFrame(paso);
+  }
+
   aplicar();
+  if (!tactil && raiz.requestAnimationFrame) vigilarRendimiento();
   raiz.Ajustes = Object.freeze({ actual: () => ({ ...actual }), cambiar, abrirPanel, cerrarPanel, cerrarJuego });
 })(this);

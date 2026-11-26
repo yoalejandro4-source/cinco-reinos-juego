@@ -101,7 +101,8 @@
     const clases = ['heroe'];
     if (ap.marco) clases.push(`marco-${ap.marco}`);
     if (o.objetivo) clases.push('objetivo-valido');
-    const leyenda = ap.avatar || LEYENDA[p.reinos[0]];
+    // Retrato: el personaje propio (rival de aventura), el avatar elegido o la legendaria del reino
+    const leyenda = p.retrato || ap.avatar || LEYENDA[p.reinos[0]];
     const retrato = tieneArte(leyenda)
       ? `<div class="heroe-retrato con-imagen">${imagenArte(leyenda, 'heroe-imagen')}<div class="heroe-insignias"><span>${a.icono}</span><span>${b.icono}</span></div></div>`
       : `<div class="heroe-retrato"><span>${a.icono}</span><span>${b.icono}</span></div>`;
@@ -146,7 +147,7 @@
         <button class="portada-boton cartas" data-accion="ir" data-destino="coleccion" aria-label="Cartas y fusiones"></button>
         <button class="portada-boton ayuda" data-accion="ir" data-destino="ayuda" aria-label="Cómo se juega"></button>
       </div>
-      <p class="version portada-version">v0.8.1</p>
+      <p class="version portada-version">v0.8.2</p>
     </div>`;
   }
 
